@@ -1,12 +1,19 @@
 %%%%%%%% ICML 2025 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
 
 \documentclass{article}
+\usepackage{tikz}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+
+\tikzstyle{layer} = [rectangle, rounded corners, minimum width=3.5cm, minimum height=1cm, text centered, draw=black, fill=blue!20]
+\tikzstyle{arrow} = [thick,->,>=stealth]
 
 % Recommended, but optional, packages for figures and better typesetting:
 \usepackage{microtype}
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{booktabs} % for professional tables
+
 
 
 % hyperref makes hyperlinks in the resulting PDF.
@@ -61,8 +68,8 @@
 \begin{document}
 
 \twocolumn[
-\icmltitle{Submission and Formatting Instructions for \\
-           International Conference on Machine Learning (ICML 2025)}
+\icmltitle{Zero-Shot Forecasting and Neural Operators \\ Master Lab
+}
 
 % It is OKAY to include author information, even for blind
 % submissions: the style file will automatically remove it for you
@@ -80,23 +87,14 @@
 \icmlsetsymbol{equal}{*}
 
 \begin{icmlauthorlist}
-\icmlauthor{Firstname1 Lastname1}{equal,yyy}
-\icmlauthor{Firstname2 Lastname2}{equal,yyy,comp}
-\icmlauthor{Firstname3 Lastname3}{comp}
-\icmlauthor{Firstname4 Lastname4}{sch}
-\icmlauthor{Firstname5 Lastname5}{yyy}
-\icmlauthor{Firstname6 Lastname6}{sch,yyy,comp}
-\icmlauthor{Firstname7 Lastname7}{comp}
-%\icmlauthor{}{sch}
-\icmlauthor{Firstname8 Lastname8}{sch}
-\icmlauthor{Firstname8 Lastname8}{yyy,comp}
-%\icmlauthor{}{sch}
-%\icmlauthor{}{sch}
+\icmlauthor{Arwin ---}{equal,yyy}
+\icmlauthor{Jan Hardtke}{equal,yyy,comp}
+\icmlauthor{Nadia Gharbi}{comp}
+
 \end{icmlauthorlist}
 
 \icmlaffiliation{yyy}{Department of XXX, University of YYY, Location, Country}
 \icmlaffiliation{comp}{Company Name, Location, Country}
-\icmlaffiliation{sch}{School of ZZZ, Institute of WWW, Location, Country}
 
 \icmlcorrespondingauthor{Firstname1 Lastname1}{first1.last1@xxx.edu}
 \icmlcorrespondingauthor{Firstname2 Lastname2}{first2.last2@www.uk}
@@ -659,26 +657,150 @@ Additionally, for each of these windows, we construct their local scale characte
 \[
 \hat{s_l} = \sigma^{\omega}_0(s_l).
 \]
-We then pass each window of observations into the pretrained FIM-\(\ell\) model. Specifically, we define:
+We then pass each window of observations into the pretrained embedding layers of the FIM-\(\ell\) model. Specifically, we define:
 \[
-    \mathbf{y}^j_i = \text{Concat}\big(\phi^{\theta}_0((S_{ji})_1), \phi^{\theta}_1((S_{ji})_2)\big), \quad \text j \leq K-1, i \leq w_l.
+    \mathbf{y}^j_i = \text{Concat}\big(\phi^{\theta}_0((S_{ji})_1), \phi^{\theta}_1((S_{ji})_2)\big), \quad \text j \leq K-1, i \leq w_j.
 \]
 We proceed by passing these \(\mathbf{y}^j\) into the branch network of the FIM-\(\ell\), resulting in
 \[
-    \mathbf{h}^j = \lambda^{\theta}_0\big(\phi^{\theta}_3\big(\psi^{\theta}_0(\mathbf{y}^{j}_1, \dots, \mathbf{y}^{j}_{w_j})\big)\big).
+    \mathbf{h}_j = (\lambda^{\theta}_0 \circ \phi^{\theta}_3 \circ \psi^{\theta}_0)\big(\mathbf{y}^{j}_1, \dots, \mathbf{y}^{j}_{w_j}\big).
 \]
-After extracting the local embeddings for each of the \(K-1\) windows, we proceed to reconstruct the \(K\)-th window. To achieve this, we first concatenate each local-scale embedding \(s_j\) with the observation embeddings and feed them into a Transformer encoder block \(\psi^{\omega}_1\). This is again followed by an attention-based summary network \(\lambda^{\omega}_1\), which generates the final embedding for the \(K\)-th window
+After extracting the local embeddings for each of the \(K-1\) windows, we proceed to reconstruct the \(K\)-th window. To achieve this, we first concatenate each local-scale embedding \(\hat{s}_j\) with the observation embeddings and feed them into a Transformer encoder block \(\psi^{\omega}_1\). This is again followed by an attention-based summary network \(\lambda^{\omega}_1\), which generates the final embedding for the \(K\)-th window
 \[
-    \mathbf{h}_K = \lambda^{\omega}_1\Big(\psi^{\omega}_1\Big(( \mathbf{h}_1, \hat{s}_1), \ldots, ( \mathbf{h}_{K-1}, \hat{s}_{K-1})\Big)\Big).
+    \mathbf{h}^{*}_K = (\eta^{\omega}_0 \circ \lambda^{\omega}_1 \circ \psi^{\omega}_1)\Big(( \mathbf{h}_1, \hat{s}_1), \ldots, \eta^{\omega}_0( \mathbf{h}_{K-1}, \hat{s}_{K-1})\Big).
 \]
+Due to the concatenation of the observation and scale embeddings, the feature dimension is now doubled compared to the original embedding size. However, the frozen projection network of FIM-\(\ell\) expects inputs in the original embedding dimension. To address this, we utilize an extractor network \(\eta^{\sigma}_0\), which transforms the output of the summary network $\lambda^{\omega}_1$ back to the dimension expected by the FIM-\(\ell\) projection layer.
+
 To generate the final predictions for the \(K\)-th window, we utilize the embedding and trunk networks of the pretrained FIM-\(\ell\) to predict the function values at the query points \(t\). This is expressed as
 \[
-    \mathbf{y}(t) = \phi^{\theta}_7\big(\text{Concat}(\mathbf{h}_K, (\phi^{\theta}_5 \circ \phi^{\theta}_4)(t))\big).
+    \mathbf{y}(t) = \phi^{\theta}_7\big(\text{Concat}(\mathbf{h}^*_K, (\phi^{\theta}_5 \circ \phi^{\theta}_4)(t))\big).
 \]
 \section{Model Training}
-\subsection{FIM-l Training}\label{sec:FIM-l}
-\subsection{FIM Training}\label{sec:FIM-l}
+In this section, we provide the necessary information to ensure the reproducibility of our work. Specifically, we outline the detailed structure of the aforementioned MLPs and discuss all relevant hyperparameters for both the model and the optimization algorithms.
+\subsection{FIM-$\ell$ Training}\label{sec:FIM-l}
+The implementation of our previously defined FIM-$\ell$ architecture is described in 
+\ref{tab:architecture}. Here, we use \(d_{\text{model}}\) to denote the embedding dimension. In our setting, we set \(d_{\text{model}} = 256\) and \(n_{\text{heads}} = 4\). Since \emph{LeakyReLU} is shift-invariant, the bias term in the linear layer can be omitted if it is followed by a \emph{LayerNorm}, as the \emph{LayerNorm} neutralizes any bias introduced by the preceding layer.
+We train the model with a batch size of 128, using the \emph{AdamW} optimizer with the following hyperparameters: 
+\(\beta\)-values \((\beta_1, \beta_2) = (0.9, 0.999)\), \(\epsilon = 10^{-8}\), and a weight decay of \(0.01\). 
+Additionally, we employ an \emph{Inverse Square Root Learning Rate} (\emph{InverseSquareRootLR})\cite{??} scheduling strategy, 
+with 100 warm-up steps, an initial learning rate of \(10^{-4}\), and a minimum learning rate of \(10^{-5}\).\\
+To save memory and computational resources, we utilize the PyTorch \emph{Automatic Mixed Precision} package, which trains the model in mixed precision. Specifically, it selects half-precision data types (\emph{bfloat16} in our case) for operations it deems suitable. This approach enables the model to leverage the highly optimized NVIDIA Tensor Cores, maximizing performance during matrix operations.\\
+For our loss computations, we use the standard \emph{Mean Squared Error} (MSE) between the predicted outputs of the model and the precomputed ground truth. Before performing the optimizer update step, we apply gradient clipping to ensure that the gradient norm does not exceed the length of a unit vector. This stabilizes training by limiting the size of each gradient step during optimization.\\
+We then provide the model with the noisy observation sequence, observation time points, query points, and the branch mask. The branch mask is then utilized by both the Transformer encoder \(\psi^{\theta}_0\) and the summary network \(\lambda^{\theta}_0\) as the padding mask.
+
+
+
+\begin{table}[h!]
+    \centering
+    \label{tab:architecture}
+    \renewcommand{\arraystretch}{1.2} % Increase row height for readability
+    \begin{tabular}{p{0.5\columnwidth} p{0.5\columnwidth}}
+    \toprule
+    \textbf{Component}               & \textbf{Details} \\ \midrule
+    \textbf{Branch Embedding $\phi^{\theta}_0$}    & Linear(1, $d_\text{model}$) \\ \midrule
+    \textbf{Branch Embedding $\phi^{\theta}_1$}    & Linear(1, $d_\text{model}$) \\ \midrule
+    \textbf{Trunk Embedding $\phi^{\theta}_4$}         & Linear(1, $d_\text{model}$) \\ \midrule
+    \textbf{Branch Encoder Input}    & Concatenate embeddings of $y$ and $t$ \\ \midrule
+    \textbf{Branch Encoder $\psi^{\theta}_0$}          & Transformer Encoder (6 layers, $2d_\text{model}$, $n_\text{heads}$) \\ \midrule
+    \textbf{Branch MLP $\phi^{\theta}_3$}              & Linear($2d_\text{model} \to d_\text{model}$), LeakyReLU, LayerNorm \\ \midrule
+    \textbf{Learnable Query}         & Parameter tensor of shape (1, $d_\text{model}$) \\ \midrule
+    \textbf{Branch Attention $\lambda^{\theta}_0$}        & Multihead Attention ($d_\text{model}$, heads=1) \\ \midrule
+    \textbf{Trunk MLP $\phi^{\theta}_5$}               & 4x Linear($d_\text{model} \to d_\text{model}$), LeakyReLU, LayerNorm \\ \midrule
+    \textbf{Combine Outputs}         & Concatenate outputs of Branch Attention and Trunk MLP \\ \midrule
+    \textbf{Final Projection $\phi^{\theta}_7$}        & 5x Linear ($2d_\text{model} \to 1$), LeakyReLU, LayerNorm \\ 
+    \bottomrule
+    \end{tabular}
+    \caption{FIM-$\ell$ architecture implementation}
+    \end{table}
+    
+
+\subsection{FIM Training}\label{sec:FIM}
+The implementation of the FIM network that we defined is detailed in Table~\ref{tab:architecture_megatron}. 
+We set \(d_\text{model} = 256\) and \(n_\text{heads} = 8\). Regarding the optimizer and learning rate strategy, 
+we use the same settings as described previously, along with automatic mixed precision training. 
+The loss function remains the \emph{Mean Squared Error} (MSE), and the gradients are clipped to ensure their 
+norm does not exceed the length of a unit vector.
+We again provide the model with the noisy observation sequence, observation time points, query points, and the branch mask. However, instead of treating a single window as one data point, each example now comprises all local windows of the global function.
+
+
+\begin{table}[h!]
+    \centering
+    \label{tab:architecture_megatron}
+    \renewcommand{\arraystretch}{1.2} % Increase row height for readability
+    \begin{tabular}{p{0.45\columnwidth} p{0.5\columnwidth}}
+    \toprule
+    \textbf{Component}               & \textbf{Details} \\ \midrule
+    \textbf{Pretrained FIM-$\ell$}   & $n_\text{heads-fim-$\ell$}$, $d_\text{model}$ (Frozen) \\ \midrule
+    \textbf{Local Scale Embedding $\sigma^{\omega}_0$}   & Linear(9, $d_\text{model}$) \\ \midrule
+    
+    \textbf{Combine Outputs}         & Concatenate outputs of Pretrained FIM-$\ell$ and Local Scale Embedding \\ \midrule
+    \textbf{Transformer Encoder $\psi^{\omega}_1$}     & 8 layers, $2d_\text{model}$, $n_\text{heads}$ \\ \midrule
+    
+    
+    \textbf{Learnable Query}         & Parameter tensor of shape (1, $2d_\text{model}$)\\ \midrule
+    \textbf{Summary Attention  $\lambda^{\omega}_1$}       & Multihead Attention ($2d_\text{model}$, $n_\text{heads}$) \\ \midrule
+    
+    \textbf{Extractor Network $\eta^{\omega}_0$} & Sequential: \\ 
+    & \quad Linear($2d_\text{model}$, $4d_\text{model}$) \\ 
+    & \quad LeakyReLU, LayerNorm \\ 
+    & \quad Linear($4d_\text{model}$, $2d_\text{model}$) \\ 
+    & \quad LeakyReLU, Linear($2d_\text{model}$, $d_\text{model}$) \\ \midrule
+    
+    \textbf{Trunk Embedding $\phi^{\theta}_4$}         & Reused from FIM-$\ell$ (Frozen)\\ \midrule
+    \textbf{Trunk MLP $\phi^{\theta}_5$}           & Reused from FIM-$\ell$ (Frozen) \\ \midrule
+    \textbf{Combine Outputs}         & Concatenate outputs of Trunk Network and Summary Network \\ \midrule
+    \textbf{Final Projection $\phi^{\theta}_7$}        & Reused from FIM-$\ell$ (Frozen): \\ 
+                                      & \quad 5x Linear ($2d_\text{model} \to 1$), LeakyReLU, LayerNorm \\ 
+    \bottomrule
+    \end{tabular}
+    \caption{FIM Architecture Overview}
+
+    \end{table}
+    
+
 \section{Experiments}
+In this section, we discuss additional experiments conducted on the model's architecture and the construction of the loss function to achieve higher prediction accuracy. The impact of each of these approaches will be presented later in Section~\ref{}.
+
+\subsection{Learned Positional Encoding for FIM-$\ell$ Embeddings}
+In this approach, we hypothesize that the model may benefit from additional positional encoding for the attention-based summary network \(\lambda^{\omega}_1\). We define
+
+\[
+    \mathbf{p} =  \psi^{\omega}_1\Big(( \mathbf{h}_1, \hat{s}_1), \ldots, \eta^{\omega}_0( \mathbf{h}_{K-1}, \hat{s}_{K-1})\Big), \quad \mathbf{p} \in \mathbb{R}^{(K-1) \times d_{\text{model}}}.
+\]
+
+as the output from the FIM transformer encoder network. In our standard implementation, \(\mathbf{p}\) is passed to the summary attention network \(\lambda^{\omega}_1\), which, by default, lacks a sense of order among these embeddings, aside from the local scale statistics of each window. We hypothesize that providing positional information may help this layer better identify the order of embeddings, enabling more informed predictions of the \(K\)-th embedding.\\
+To address this, we introduce an additional parameter vector \(\mathbf{z} \in \mathbb{R}^{(K-1) \times d_{\text{model}}}\), which serves as a learnable positional encoding. We add \(\mathbf{z}\) elementwise to \(\mathbf{p}\) before passing the result to \(\lambda^{\omega}_1\), as follows
+
+\[
+    \mathbf{h}^*_K = (\eta^{\omega}_0 \circ \lambda^{\omega}_1) \Big(\mathbf{p} + \mathbf{z} \Big).
+\]
+
+
+
+\subsection{Similarity loss between FIM-$\ell$ ground truth and predicted embeddings.}
+Another strategy is the usage of the ground truth $\mathbf{h}_K$ for enabling more accurate predictions. The idea is to align the predicted $\mathbf{h}^*_K$ and the actual ground truth $\mathbf{h}_K$ such that they are as close as possible to each other. We can do this by adding an additional term to the model's loss function, which incentivizes it to form predictions $\mathbf{h}^*_K$ that are close to the FIM-$\ell$ predicted $\mathbf{h}_K$. A suitable metric for this is the \emph{cosine similarity}, defined as
+\[
+\text{CosSim}(\mathbf{a}, \mathbf{b}) = \frac{\mathbf{a}^T \mathbf{b}}{\|\mathbf{a}\| \|\mathbf{b}\|}, \quad \mathbf{a}, \mathbf{b} \in \mathbb{R}^n.
+\]
+\[
+\forall \mathbf{a}, \mathbf{b} \in \mathbb{R}^n \setminus \{\mathbf{0}\}, \quad \text{CosSim}(\mathbf{a}, \mathbf{b}) \in [-1, 1].
+\]
+
+
+Geometrically, the \emph{cosine similarity} represents the cosine of the angle between two vectors. Specifically, $\text{CosSim}(\mathbf{a}, \mathbf{b}) = 0$ indicates orthogonality, while $\text{CosSim}(\mathbf{a}, \mathbf{b}) = 1$ and $\text{CosSim}(\mathbf{a}, \mathbf{b}) = -1$ correspond to vectors pointing in the same and opposite directions, respectively.\\
+We now define our new loss function $\mathcal{L}(y, \hat{y}, \mathbf{h}^*_K, \mathbf{h}_K)$, which incorporates both prediction accuracy and alignment between the predicted and ground-truth representations. The loss function is given by
+\[
+    \mathcal{L}(y,\hat{y},\mathbf{h}^*_K,\mathbf{h}_K) = \frac{1}{n}\sum_{1}^{n}(y_i - \hat{y}_i)^2 + 
+    \beta \cdot |\text{CosSim}(\mathbf{h}^*_K,\mathbf{h}_K) - 1|,
+\]
+where $y$ denotes the ground truth values of the target variable, and $\hat{y}$ represents the corresponding predicted values by the model. We choose $\beta \ll 1$ to ensure that the optimization does not focus too aggressively on aligning $\mathbf{h}^*_K$ and $\mathbf{h}_K$.
+
+
+
+
+
+
+
 \section{Results}
 
 % In the unusual situation where you want a paper to appear in the
