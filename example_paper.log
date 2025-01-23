@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.1.18)  21 JAN 2025 20:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.1.18)  23 JAN 2025 20:13
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -861,35 +861,35 @@ Overfull \hbox (6.15448pt too wide) detected at line 663
 
 [6]
 
-Package natbib Warning: Citation `??' on page 7 undefined on input line 685.
+Package natbib Warning: Citation `??' on page 7 undefined on input line 684.
 
 
-Underfull \hbox (badness 2277) in paragraph at lines 705--705
+Underfull \hbox (badness 2277) in paragraph at lines 704--704
 []\OT1/ptm/m/n/10 (+20) Linear($\OT1/cmr/m/n/10 2\OML/cmm/m/it/10 d[] \OMS/cmsy/m/n/10 ! \OML/cmm/m/it/10 d[]$\OT1/ptm/m/n/10 (+20) ),
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 709--709
+Underfull \hbox (badness 10000) in paragraph at lines 708--708
 []\OT1/ptm/m/n/10 (+20) Concatenate out-puts of
  []
 
 
-Underfull \hbox (badness 1052) in paragraph at lines 710--711
+Underfull \hbox (badness 1052) in paragraph at lines 709--710
 []\OT1/ptm/m/n/10 (+20) 5x Lin-ear ($\OT1/cmr/m/n/10 2\OML/cmm/m/it/10 d[] \OMS/cmsy/m/n/10 ! \OT1/cmr/m/n/10 1$\OT1/ptm/m/n/10 (+20) ),
  []
 
 
-Overfull \hbox (24.0pt too wide) in paragraph at lines 697--713
+Overfull \hbox (24.0pt too wide) in paragraph at lines 696--712
  [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 747--747
+Underfull \hbox (badness 10000) in paragraph at lines 746--746
 [] \OT1/ptm/m/n/10 (+20) LeakyReLU,
  []
 
 
-Overfull \hbox (12.2554pt too wide) in paragraph at lines 730--756
+Overfull \hbox (12.2554pt too wide) in paragraph at lines 729--755
  [][] 
  []
 
@@ -897,43 +897,85 @@ Overfull \hbox (12.2554pt too wide) in paragraph at lines 730--756
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-LaTeX Warning: Reference `' on page 7 undefined on input line 762.
+LaTeX Warning: Reference `' on page 7 undefined on input line 761.
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [7pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has been already used, duplicate ignored
+[7pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.763 
+l.762 
       ]
-Overfull \hbox (24.911pt too wide) detected at line 769
+Overfull \hbox (24.911pt too wide) detected at line 768
 \OT1/cmr/bx/n/10 p \OT1/cmr/m/n/10 = \OML/cmm/m/it/10  [][]\OT1/cmr/m/n/10 (\OT1/cmr/bx/n/10 h[]\OML/cmm/m/it/10 ; []\OT1/cmr/m/n/10 )\OML/cmm/m/it/10 ; [] ; ^^Q[]\OT1/cmr/m/n/10 (\OT1/cmr/bx/n/10 h[]\OML/cmm/m/it/10 ; []\OT1/cmr/m/n/10 )[]\OML/cmm/m/it/10 ;  \OT1/cmr/bx/n/10 p \OMS/cmsy/m/n/10 2 \U/msb/m/n/10 R[]\OML/cmm/m/it/10 :
  []
 
 
-Underfull \hbox (badness 3989) in paragraph at lines 790--792
+Underfull \hbox (badness 3989) in paragraph at lines 789--792
 \OT1/ptm/m/n/10 (+20) sine of the an-gle be-tween two vec-tors. Specif-i-
  []
 
-
-Overfull \hbox (16.15358pt too wide) detected at line 795
-\OMS/cmsy/m/n/10 L\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 y; []; \OT1/cmr/bx/n/10 h[]\OML/cmm/m/it/10 ; \OT1/cmr/bx/n/10 h[]\OT1/cmr/m/n/10 ) = [] [](\OML/cmm/m/it/10 y[] \OMS/cmsy/m/n/10 ^^@ []\OT1/cmr/m/n/10 )[] + \OML/cmm/m/it/10 ^^L \OMS/cmsy/m/n/10 ^^A j[]\OT1/cmr/m/n/10 (\OT1/cmr/bx/n/10 h[]\OML/cmm/m/it/10 ; \OT1/cmr/bx/n/10 h[]\OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^@ \OT1/cmr/m/n/10 1\OMS/cmsy/m/n/10 j\OML/cmm/m/it/10 ;
- []
-
-
-Package natbib Warning: Citation `langley00' undefined on input line 808.
-
-No file example_paper.bbl.
 [8pdfTeX warning (ext4): destination with the same identifier (name{table.3}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.819 \newpage
-              ]
+l.809 \section
+              {Results}]
+<assets/validation1.png, id=133, 507.3354pt x 268.1217pt>
+File: assets/validation1.png Graphic file (type png)
+<use assets/validation1.png>
+Package pdftex.def Info: assets/validation1.png  used on input line 821.
+(pdftex.def)             Requested size: 234.8775pt x 124.13116pt.
+<assets/validation2.png, id=137, 497.9403pt x 268.1217pt>
+File: assets/validation2.png Graphic file (type png)
+<use assets/validation2.png>
+Package pdftex.def Info: assets/validation2.png  used on input line 830.
+(pdftex.def)             Requested size: 234.8775pt x 126.47133pt.
+
+Overfull \hbox (6.53159pt too wide) in paragraph at lines 841--851
+ [][] 
+ []
+
+[9pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.858 
+      pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.858 
+      pdfTeX warning (ext4): destination with the same identifier (name{table.4}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.858 
+       <./assets/validation1.png> <./assets/validation2.png>]
+<assets/etth128-fail.png, id=152, 727.7589pt x 379.4175pt>
+File: assets/etth128-fail.png Graphic file (type png)
+<use assets/etth128-fail.png>
+Package pdftex.def Info: assets/etth128-fail.png  used on input line 861.
+(pdftex.def)             Requested size: 234.8775pt x 122.45238pt.
+<assets/etth128-success.png, id=155, 727.7589pt x 379.4175pt>
+File: assets/etth128-success.png Graphic file (type png)
+<use assets/etth128-success.png>
+Package pdftex.def Info: assets/etth128-success.png  used on input line 871.
+(pdftex.def)             Requested size: 234.8775pt x 122.45238pt.
+
+
+Package natbib Warning: Citation `langley00' undefined on input line 881.
+
+No file example_paper.bbl.
+[10pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.894 \onecolumn
+                pdfTeX warning (ext4): destination with the same identifier (name{figure.5}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.894 \onecolumn
+                
+
+ <./assets/etth128-fail.png> <./assets/etth128-success.png>]
 
 Package natbib Warning: There were undefined citations.
 
-[9
+[11
 
 ] (./example_paper.aux)
 
@@ -946,18 +988,18 @@ Package rerunfilecheck Info: File `example_paper.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 27675 strings out of 480247
- 521320 string characters out of 5896151
- 831625 words of memory out of 5000000
- 44741 multiletter control sequences out of 15000+600000
- 520232 words of font info for 295 fonts, out of 8000000 for 9000
+ 27746 strings out of 480247
+ 522619 string characters out of 5896151
+ 832625 words of memory out of 5000000
+ 44779 multiletter control sequences out of 15000+600000
+ 522189 words of font info for 307 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  100i,17n,104p,1042b,588s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on example_paper.pdf (9 pages, 309430 bytes).
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on example_paper.pdf (11 pages, 583687 bytes).
 PDF statistics:
- 258 PDF objects out of 1000 (max. 8388607)
- 194 compressed objects within 2 object streams
- 59 named destinations out of 1000 (max. 500000)
- 83474 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 297 PDF objects out of 1000 (max. 8388607)
+ 220 compressed objects within 3 object streams
+ 69 named destinations out of 1000 (max. 500000)
+ 87590 words of extra memory for PDF output out of 89155 (max. 10000000)
 

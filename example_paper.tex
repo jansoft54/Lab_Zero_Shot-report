@@ -680,8 +680,7 @@ In this section, we provide the necessary information to ensure the reproducibil
 \subsection{FIM-$\ell$ Training}\label{sec:FIM-l}
 The implementation of our previously defined FIM-$\ell$ architecture is described in 
 \ref{tab:architecture}. Here, we use \(d_{\text{model}}\) to denote the embedding dimension. In our setting, we set \(d_{\text{model}} = 256\) and \(n_{\text{heads}} = 4\). Since \emph{LeakyReLU} is shift-invariant, the bias term in the linear layer can be omitted if it is followed by a \emph{LayerNorm}, as the \emph{LayerNorm} neutralizes any bias introduced by the preceding layer.
-We train the model with a batch size of 128, using the \emph{AdamW} optimizer with the following hyperparameters: 
-\(\beta\)-values \((\beta_1, \beta_2) = (0.9, 0.999)\), \(\epsilon = 10^{-8}\), and a weight decay of \(0.01\). 
+We train the model with a batch size of 128, using the \emph{AdamW} optimizer with the following hyperparameters: \(\beta\)-values \((\beta_1, \beta_2) = (0.9, 0.999)\), \(\epsilon = 10^{-8}\), and a weight decay of \(0.01\). The training is performed for 20 epochs, which took approximately one hour.
 Additionally, we employ an \emph{Inverse Square Root Learning Rate} (\emph{InverseSquareRootLR})\cite{??} scheduling strategy, 
 with 100 warm-up steps, an initial learning rate of \(10^{-4}\), and a minimum learning rate of \(10^{-5}\).\\
 To save memory and computational resources, we utilize the PyTorch \emph{Automatic Mixed Precision} package, which trains the model in mixed precision. Specifically, it selects half-precision data types (\emph{bfloat16} in our case) for operations it deems suitable. This approach enables the model to leverage the highly optimized NVIDIA Tensor Cores, maximizing performance during matrix operations.\\
@@ -720,7 +719,7 @@ We set \(d_\text{model} = 256\) and \(n_\text{heads} = 8\). Regarding the optimi
 we use the same settings as described previously, along with automatic mixed precision training. 
 The loss function remains the \emph{Mean Squared Error} (MSE), and the gradients are clipped to ensure their 
 norm does not exceed the length of a unit vector.
-We again provide the model with the noisy observation sequence, observation time points, query points, and the branch mask. However, instead of treating a single window as one data point, each example now comprises all local windows of the global function.
+We again provide the model with the noisy observation sequence, observation time points, query points, and the branch mask. However, instead of treating a single window as one data point, each example now comprises all local windows of the global function. We then continue training for 70 epochs, which takes approximately 4 hours. All model training was conducted on an NVIDIA RTX 3070 GPU, equipped with 8GB of GDDR6 VRAM.
 
 
 \begin{table}[h!]
@@ -788,12 +787,18 @@ Another strategy is the usage of the ground truth $\mathbf{h}_K$ for enabling mo
 
 
 Geometrically, the \emph{cosine similarity} represents the cosine of the angle between two vectors. Specifically, $\text{CosSim}(\mathbf{a}, \mathbf{b}) = 0$ indicates orthogonality, while $\text{CosSim}(\mathbf{a}, \mathbf{b}) = 1$ and $\text{CosSim}(\mathbf{a}, \mathbf{b}) = -1$ correspond to vectors pointing in the same and opposite directions, respectively.\\
+To give the network a better chance of transforming $\mathbf{h}^*_K$, we introduce an additional 4-layer MLP called $\lambda_2^{\omega}$. We then calculate the cosine similarity (CosSim) between the output of $\lambda_2^{\omega}$ and $\mathbf{h}_K$.\\
 We now define our new loss function $\mathcal{L}(y, \hat{y}, \mathbf{h}^*_K, \mathbf{h}_K)$, which incorporates both prediction accuracy and alignment between the predicted and ground-truth representations. The loss function is given by
 \[
-    \mathcal{L}(y,\hat{y},\mathbf{h}^*_K,\mathbf{h}_K) = \frac{1}{n}\sum_{1}^{n}(y_i - \hat{y}_i)^2 + 
-    \beta \cdot |\text{CosSim}(\mathbf{h}^*_K,\mathbf{h}_K) - 1|,
+\begin{aligned}
+\mathcal{L}(y,\hat{y},\mathbf{h}^*_K,\mathbf{h}_K) &= 
+\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2   \\
+&+ \beta \cdot |\text{CosSim}(\lambda_2^{\omega}(\mathbf{h}^*_K),\mathbf{h}_K) - 1|.
+\end{aligned}
 \]
-where $y$ denotes the ground truth values of the target variable, and $\hat{y}$ represents the corresponding predicted values by the model. We choose $\beta \ll 1$ to ensure that the optimization does not focus too aggressively on aligning $\mathbf{h}^*_K$ and $\mathbf{h}_K$.
+
+
+where $y$ denotes the ground truth values of the target variable, and $\hat{y}$ represents the corresponding predicted values by the model. We choose $\beta = 0.2$ to ensure that the optimization does not focus too aggressively on aligning $\mathbf{h}^*_K$ and $\mathbf{h}_K$.
 
 
 
@@ -802,6 +807,74 @@ where $y$ denotes the ground truth values of the target variable, and $\hat{y}$ 
 
 
 \section{Results}
+We will now discuss our findings regarding both the baseline architecture and the performance of our additional experiments. For evaluation, we utilize both our validation set and the \emph{ETTh1} dataset, which comprises real-world time series data from multiple domains.
+\subsection{Findings on Validation Set}
+On our validation set, we evaluate the performance of our models with the 
+$\emph{Mean Absolute Error}$ (MAE) defined as
+\[
+\text{MAE}(y,\hat{y}) = \frac{1}{n}\sum_{1}^{n}|y_i-\hat{y}_i|.
+\]
+In Table~\ref{tab:evaluation_results}, we present the results on our validation set for multiple instances of our model. We abbreviate our Standard model with the capital letter S, as well as PE for positional encoding and CSL for cosine-similarity loss. Unfortunately, as shown in the table, neither the addition of positional encoding to the FIM-$\ell$ embeddings in the summary network nor the introduction of the cosine loss yielded any significant benefit. However, we observed a slightly lower training loss for the PE variant.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{assets/validation1.png}
+    \caption{Your caption here.}
+    \label{fig:validation1}
+\end{figure}
+Looking at the plots of the predictions generated by our model on the validation set, we observed that the model performs well on data with high periodicity (see Figure~\ref{fig:validation1}). Since the functions and the parameters for the Gaussian process are sampled randomly, it is possible to encounter functions with less clear patterns (see Figure~\ref{fig:validation2}). These functions pose a challenge for the model, as it cannot anticipate their behavior in advance. This results in the model learning the average course of such functions. We postulate that this behavior negatively impacts the model's performance on functions where distinct patterns are present. It's therefore crucial to have checks in place to ensure that the model is only trained on data that exhibits clear patterns or aligns with the desired characteristics of the target task. This may help prevent the model from overfitting to noise or learning irrelevant trends.
+
+ 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{assets/validation2.png}
+    \caption{Your caption here.}
+    \label{fig:validation2}
+\end{figure}
+
+\subsection{Findings on ETTh1}
+ETTh1 is a time series dataset containing data from various domains, such as oil temperature and electrical charge. We evaluate our model with a time horizon of 96, which corresponds to capturing 480 data points. These are split into $K=5$ windows, with the task being to predict the 5th window. 
+The five windows are then shifted by one to the right and evaluated again.
+The same procedure is applied for the time horizon of 192.
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \textbf{} & S & PE & PE + CSL & TimesFM \\ \hline 
+    Validation   & 0.576             & 0.579             & 0.585             & -       \\ \hline
+    ETTh1 - 96   & 0.966             & 0.968            & 0.928      &0.43*             \\ \hline
+    ETTh1 - 192  & 1.0904            & 1.089            & 1.043            & 0.43*                     \\ \hline
+
+\end{tabular}
+    \caption{MAE results for three model variants and TimesFM on two datasets.\\
+    \textit{*} TimesFM \cite{} only reports the average score over both time horizons. Additionally, they use only 4 datasets from ETTh1, which they do not disclose.
+    }
+    \label{tab:evaluation_results}
+\end{table}
+We evaluate our different model variants on the entire ETTh1 dataset in a zero-shot manner, meaning that we evaluate on all sub-datasets contained within ETTh1 and calculate the average performance.
+Additionally, we compare our model to the one proposed by TimesFM \cite{}, using their accuracy score as a benchmark.
+As shown in Table~\ref{tab:evaluation_results}, positional encoding does not appear to offer a significant benefit over the standard model. However, the PE + CSL approach provides slightly better performance. We also observe that the zero-shot performance of TimesFM on ETTh1-96 is much better than that of our current model. It is important to note, however, that TimesFM has been trained on a variety of data, both real-world and synthetic, and is approximately an order of magnitude larger in terms of parameter count.
+We observe the same ordering of models for a horizon window of 192, where the PE + CSL version performs slightly better than the vanilla and PE versions.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{assets/etth128-fail.png}
+    \caption{Example of good performance on the oil temperature dataset with $\text{horizon}=96$, using the PE + CSL model version.
+    }
+    \label{fig:etth96-success}
+\end{figure}
+Finally, we present two examples from the ETTh1 dataset using our model to showcase both well-performing and poorly-performing cases. In Figure~\ref{fig:etth96-success}, the model successfully predicts the horizon, as the data follows a very predictable pattern. However, in Figure~\ref{fig:etth96-fail}, we observe that the model struggles to accurately predict the horizon probably due to the lack of a very clear pattern in the data.
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{assets/etth128-success.png}
+    \caption{Example of bad performance on the oil temperature dataset with $\text{horizon}=96$, using the PE + CSL model version.
+    }\label{fig:etth96-fail}
+\end{figure}
+This suggests that our networks would likely benefit significantly from training on more diverse and real-world datasets, allowing them to learn patterns that are more subtle than those generated by a Gaussian process with a periodic kernel.
+
+\section{Conclusion}
 
 % In the unusual situation where you want a paper to appear in the
 % references without citing it in the main text, use \nocite
