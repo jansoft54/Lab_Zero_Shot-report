@@ -595,18 +595,20 @@ paper is later flagged for ethics review.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Report Start %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problem Definition}
-% TODO: noisy values, differnt number of points in window
-The goal of our project was to create a model which forecasts the future points of a time-series in a zero-shot manner. Concretely we want to build a model, that takes in $k$ previous windows of length $L$ of a time-series and then predicts the next $k+1$ window of length $L$. The model should also work in a zero-shot manner, meaning it should work without requiring any fine-tuning on the specific data it will be used on. To accomplish this we constructed a synthetic training dataset, build to cover a wide range of different time-series for the model to learn in order to facilitate the zero-shot use of the model. Our model consists  of two separate networks, one for encoding the $k$ windows and a second one for predicting the window $k+1$ from the encodings. 
-
+The goal of our project was to create a model which forecasts the future points of a time-series in a zero-shot manner. Concretely we want to build a model, that takes in $k$ previous windows of length $L$ of a time-series and then predicts the next $k+1$ window of length $L$. The model should also work in a zero-shot manner, meaning it should work without requiring any fine-tuning on the specific data it will be used on. To accomplish this we constructed a synthetic training dataset, build to cover a wide range of different time-series for the model to learn in order to facilitate the zero-shot use of the model. We also added artificial noise into our time-series data to make the model more robust and usable for real world data. Our model consists  of two separate networks, one for encoding the $k$ windows and a second one for predicting the window $k+1$ from the encodings. 
 
 \section{Methods}
-In this section we will look at the two main architectures that our model is based on. We will first look at DeepONet~\cite{Deeponet} in Section \ref{sec:DeepONet} and afterwards at FIM and FIM-l~\cite{fim-l} in Section \ref{sec:FIM-l}.
+In this section we will look at the two main architectures that our model is based on. We will first look at DeepONet~\cite{Deeponet}, which encodes out time-series windows and fits a function on the noisy time points, in Section \ref{sec:DeepONet} and afterwards at FIM~\cite{fim-l}, which predicts the future encoding, in Section \ref{sec:FIM-l}.
 
 \subsection{DeepONet}\label{sec:DeepONet}
-Deep operator network (DeepONet)\cite{Deeponet} is a neural network architecture designed to learn nonlinear operators more accurately and efficiently than standard fully-connected networks. DeepONet consists of two sub-networks, a branch net and a trunk net. The branch net takes in $m$ fixed values of the input function $f(t)$ and encodes them while the trunk net takes in the time point/location $t^*$ for the output function we want to predict and encodes it. Both networks return a $p$-dimensional encoding and to obtain the output function value at our time point $t^*$, the scalar product between both encodings is calculated.
+Deep operator network (DeepONet)\cite{Deeponet} is a neural network architecture designed to learn nonlinear operators more accurately and efficiently than standard fully-connected networks. DeepONet consists of two sub-networks, a branch net and a trunk net. The branch net takes in $m$ fixed values of the input function $f(t)$ and encodes them while the trunk net takes in the time point $t^*$ for the output function we want to predict and encodes it. Both networks return a $p$-dimensional encoding and to obtain the output function value at our time point $t^*$, the scalar product between both encodings is calculated.
 
 
-\subsection{FIM-l}\label{sec:FIM-l}
+\subsection{FIM}\label{sec:FIM-l}
+FIM\cite{fim-l} is a model originally designed for the interpolation of time series displaying temporal missing patterns. Meaning we have our $k$ embeddings from $1, 2, ..., q-1, q+1, ..., k$ with the embedding $q$ missing. The task of FIM was then to predict the embedding for window $q$ from the other embeddings. In our work we used the core ideas of FIM but for forecasting the future embedding $k+1$. For this FIM takes in the embeddings $h_1, .., h_k$ along with local scale embeddings $s_1, .., s_k$. These scale embeddings are created by saving the normalization values, used to normalize the time-series data for each respective window, and feeding them through a MLP to obtain an embedding. Both embeddings then get concatenated and fed through a transformer and summary network to obtain the embedding $h_{k+1}$. With this embedding we can use the trunk net from DeepONet to obtain a function for future time points $t^*$.
+
+\section{Synthetic Dataset}
+For training our models we created two synthetic datasets (one for each model) containing different time-series.
 
 
 
