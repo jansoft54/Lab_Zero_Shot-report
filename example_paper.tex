@@ -608,7 +608,13 @@ Deep operator network (DeepONet)\cite{Deeponet} is a neural network architecture
 FIM\cite{fim-l} is a model originally designed for the interpolation of time series displaying temporal missing patterns. Meaning we have our $k$ embeddings from $1, 2, ..., q-1, q+1, ..., k$ with the embedding $q$ missing. The task of FIM was then to predict the embedding for window $q$ from the other embeddings. In our work we used the core ideas of FIM but for forecasting the future embedding $k+1$. For this FIM takes in the embeddings $h_1, .., h_k$ along with local scale embeddings $s_1, .., s_k$. These scale embeddings are created by saving the normalization values, used to normalize the time-series data for each respective window, and feeding them through a MLP to obtain an embedding. Both embeddings then get concatenated and fed through a transformer and summary network to obtain the embedding $h_{k+1}$. With this embedding we can use the trunk net from DeepONet to obtain a function for future time points $t^*$.
 
 \section{Synthetic Dataset}
-For training our models we created two synthetic datasets (one for each model) containing different time-series.
+For training and testing our models we created two synthetic datasets (one for each model) containing different time-series.
+For the DeepONet model we created a dataset containing 100K random one-dimensional, target interpolation functions $f(t)$ on the interval $[0, 1]$, defined on a fine grid of 128 points.
+We sampled them from Gaussian Processes with an RBF kernel and mean $0$. The kernel has two hyperparameters, the scale which controls the scale at which variations take place and the variance.
+The scale is drawn randomly from a beta distribution and scaled by $0.1$ to increase the variety of the vector fields in our dataset.
+Depending on weather or not we are creating a train or test dataset the alpha and beta values for the beta distributions are randomly chosen from either $[1.0,2.0,5.0]$ or $[0.5,3.25,7.8]$ respectively. The variance for the kernel is drawn uniformly from the interval $[0.5, 2]$.
+we then sample random observations grid points $t$ on our functions, which become the input for our model. We sample a random subset between “min=50” and “max=90” points from the 128 grid points and pad the rest with $0$'s. We also create a binary mask for each observation grid, which track which indices are observed versus unobserved, that gets fed into our model along with the points.
+Half of our observation points are sampled regular and the other half irregular (in time). Since data is noisy in real world applications we add gaussian noise to the observations with a standard deviation drawn from $\mathcal{N}(0, 0.1)$ and mean $0$ after first normalizing our functions to $[0,1]$.
 
 
 
