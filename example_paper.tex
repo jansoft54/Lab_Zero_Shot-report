@@ -87,7 +87,7 @@
 \icmlsetsymbol{equal}{*}
 
 \begin{icmlauthorlist}
-\icmlauthor{Arwin ---}{equal,yyy}
+\icmlauthor{Arwin Sadaghiani}{equal,yyy}
 \icmlauthor{Jan Hardtke}{equal,yyy,comp}
 \icmlauthor{Nadia Gharbi}{comp}
 
@@ -614,8 +614,14 @@ We sampled them from Gaussian Processes with an RBF kernel and mean $0$. The ker
 The scale is drawn randomly from a beta distribution and scaled by $0.1$ to increase the variety of the vector fields in our dataset.
 Depending on weather or not we are creating a train or test dataset the alpha and beta values for the beta distributions are randomly chosen from either $[1.0,2.0,5.0]$ or $[0.5,3.25,7.8]$ respectively. The variance for the kernel is drawn uniformly from the interval $[0.5, 2]$.
 we then sample random observations grid points $t$ on our functions, which become the input for our model. We sample a random subset between “min=50” and “max=90” points from the 128 grid points and pad the rest with $0$'s. We also create a binary mask for each observation grid, which track which indices are observed versus unobserved, that gets fed into our model along with the points.
-Half of our observation points are sampled regular and the other half irregular (in time). Since data is noisy in real world applications we add gaussian noise to the observations with a standard deviation drawn from $\mathcal{N}(0, 0.1)$ and mean $0$ after first normalizing our functions to $[0,1]$.
-
+Half of our observation points are sampled regular and the other half irregular (in time). Since data is noisy in real world applications we add gaussian noise to the observations with a standard deviation drawn from $\mathcal{N}(0, 0.1)$ and mean $0$ after first normalizing our functions to $[0,1]$.\\
+For the FIM model we created a dataset containing 100K random one-dimensional, target functions $f(t)$ on the interval $[0, 1]$, defined on a fine grid of 640 points.
+We sampled them from Gaussian Processes with mean $0$ and differnt kernels, namely a periodic kernel (30\%), a locally periodic kernel (30\%), a linear plus periodic kernel (20\%)  and a liner times periodic kernel (20\%).
+On top of the length and variance the kernels now also have a periodicity parameter. Both the length and periodicity are drawn from a beta distribution again. This time the values for the distribution are drawn from either $[1.0,2.0,5.0]$ or $[1,1,1]$.
+The varaince is drawn the same way as for the DeepONet dataset. We again sample random observations grid points $t$ on our functions, which become the input for our model. However since we want to predict the future embedding $k+1$ we split the observations into $5$ windows with $k=4$. Thus we only sample observations from the first $540$ points.
+The first $4$ windows are then created the same way as for the DeepONet dataset, only that the standard deviation of the noise is now drawn from $\mathcal{N}(0, 0.025)$.
+On thing to note is that before we perform to normilizations we first normalize the whole function to $[0,1]$ and then we normalizue each window of $128$ points to $[0,1]$. We save the local statistics of each window into a scales array $s_l$, with:
+$s_l = [f(t)^{min}, f(t)^{max}, f(t)^{first}, f(t)^{last}, f(t)^{first} - f(t)^{last}, t^{first}, t^{last}, t^{first} - t^{last}]$. With $t$ being our sampled observations and $f$ being our noisy function values.
 
 
 \section{Model architecture}
