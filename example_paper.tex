@@ -595,33 +595,50 @@ paper is later flagged for ethics review.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Report Start %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problem Definition}
-The goal of our project was to create a model which forecasts the future points of a time-series in a zero-shot manner. Concretely we want to build a model, that takes in $k$ previous windows of length $L$ of a time-series and then predicts the next $k+1$ window of length $L$. The model should also work in a zero-shot manner, meaning it should work without requiring any fine-tuning on the specific data it will be used on. To accomplish this we constructed a synthetic training dataset, build to cover a wide range of different time-series for the model to learn in order to facilitate the zero-shot use of the model. We also added artificial noise into our time-series data to make the model more robust and usable for real world data. Our model consists  of two separate networks, one for encoding the $k$ windows and a second one for predicting the window $k+1$ from the encodings. 
+The goal of our project was to create a model which forecasts the future points of a time-series in a zero-shot manner. Concretely we want to build a model, that takes in $k$ previous windows of length $L$ of a time-series and then predicts the next $k+1$ window of length $L$. The model should also work in a zero-shot manner, meaning it should work without requiring any fine-tuning on the specific data it will be used on. To accomplish this we constructed a synthetic training dataset, built to cover a wide range of different time-series for the model to learn in order to facilitate the zero-shot use of the model. We also added artificial noise into our time-series data to make the model more robust and usable for real-world data. Our model consists  of two separate networks, one for encoding the $k$ windows and a second one for predicting the window $k+1$ from the encodings. 
 
 \section{Methods}
-In this section we will look at the two main architectures that our model is based on. We will first look at DeepONet~\cite{Deeponet}, which encodes out time-series windows and fits a function on the noisy time points, in Section \ref{sec:DeepONet} and afterwards at FIM~\cite{fim-l}, which predicts the future encoding, in Section \ref{sec:FIM-l}.
+In this section we will look at the two main architectures that our model is based on. We will first look at DeepONet~\cite{Deeponet}, which encodes our time-series windows and fits a function on the noisy time points, in Section \ref{sec:DeepONet} and afterwards at FIM~\cite{fim-l}, which predicts the future encoding, in Section \ref{sec:FIM_arwin}.
 
 \subsection{DeepONet}\label{sec:DeepONet}
-Deep operator network (DeepONet)\cite{Deeponet} is a neural network architecture designed to learn nonlinear operators more accurately and efficiently than standard fully-connected networks. DeepONet consists of two sub-networks, a branch net and a trunk net. The branch net takes in $m$ fixed values of the input function $f(t)$ and encodes them while the trunk net takes in the time point $t^*$ for the output function we want to predict and encodes it. Both networks return a $p$-dimensional encoding and to obtain the output function value at our time point $t^*$, the scalar product between both encodings is calculated.
+Deep operator network (DeepONet)\cite{Deeponet} is a neural network architecture designed to learn nonlinear operators more accurately and efficiently than standard fully-connected networks. DeepONet consists of two sub-networks, a branch net and a trunk net. The branch net takes in $m$ fixed values of the input function $f(\tau)$ and encodes them while the trunk net takes in the time point $t$ for the output function we want to predict and encodes it. Both networks return a $p$-dimensional encoding and to obtain the output function value at our time point $t$, the scalar product between both encodings is calculated.
 
 
-\subsection{FIM}\label{sec:FIM-l}
-FIM\cite{fim-l} is a model originally designed for the interpolation of time series displaying temporal missing patterns. Meaning we have our $k$ embeddings from $1, 2, ..., q-1, q+1, ..., k$ with the embedding $q$ missing. The task of FIM was then to predict the embedding for window $q$ from the other embeddings. In our work we used the core ideas of FIM but for forecasting the future embedding $k+1$. For this FIM takes in the embeddings $h_1, .., h_k$ along with local scale embeddings $s_1, .., s_k$. These scale embeddings are created by saving the normalization values, used to normalize the time-series data for each respective window, and feeding them through a MLP to obtain an embedding. Both embeddings then get concatenated and fed through a transformer and summary network to obtain the embedding $h_{k+1}$. With this embedding we can use the trunk net from DeepONet to obtain a function for future time points $t^*$.
+\subsection{FIM}\label{sec:FIM_arwin}
+FIM\cite{fim-l} is a model originally designed for the interpolation of time series displaying temporal missing patterns. Meaning we have our $k$ embeddings from $1, 2, ..., q-1, q+1, ..., k$ with the embedding $q$ missing. The task of FIM was then to predict the embedding for window $q$ from the other embeddings. In our work we used the core ideas of FIM but for forecasting the future embedding $k+1$. For this FIM takes in the embeddings $h_1, .., h_k$ along with local scale embeddings $s_1, .., s_k$. These scale embeddings are created by saving the normalization values, used to normalize the time-series data for each respective window, and feeding them through a MLP to obtain an embedding. Both embeddings then get concatenated and fed through a transformer and summary network to obtain the embedding $h_{k+1}$. With this embedding we can use the trunk net from DeepONet to obtain a function for future time points $t$.
 
 \section{Synthetic Dataset}
-For training and testing our models we created two synthetic datasets (one for each model) containing different time-series.
-For the DeepONet model we created a dataset containing 100K random one-dimensional, target interpolation functions $f(t)$ on the interval $[0, 1]$, defined on a fine grid of 128 points.
-We sampled them from Gaussian Processes with an RBF kernel and mean $0$. The kernel has two hyperparameters, the scale which controls the scale at which variations take place and the variance.
+For training and testing our models, we created two synthetic datasets (one for each model) containing different time-series.
+For the DeepONet model, we created a dataset containing 100K random one-dimensional, target interpolation functions $f(\tau)$ on the interval $[0, 1]$, defined on a fine grid of 128 points.
+We sampled them from Gaussian Processes with an RBF kernel and mean $0$. The kernel is defined as:
+\begin{equation*}
+    k(\tau, \tau') = \sigma^2 \cdot \exp\left(-\frac{||\tau - \tau'||^2}{2 \cdot l^2}\right)
+\end{equation*}
+It has two hyperparameters, the scale $l$, which controls the scale at which variations take place and the variance $\sigma^2$.
 The scale is drawn randomly from a beta distribution and scaled by $0.1$ to increase the variety of the vector fields in our dataset.
-Depending on weather or not we are creating a train or test dataset the alpha and beta values for the beta distributions are randomly chosen from either $[1.0,2.0,5.0]$ or $[0.5,3.25,7.8]$ respectively. The variance for the kernel is drawn uniformly from the interval $[0.5, 2]$.
-we then sample random observations grid points $t$ on our functions, which become the input for our model. We sample a random subset between “min=50” and “max=90” points from the 128 grid points and pad the rest with $0$'s. We also create a binary mask for each observation grid, which track which indices are observed versus unobserved, that gets fed into our model along with the points.
-Half of our observation points are sampled regular and the other half irregular (in time). Since data is noisy in real world applications we add gaussian noise to the observations with a standard deviation drawn from $\mathcal{N}(0, 0.1)$ and mean $0$ after first normalizing our functions to $[0,1]$.\\
-For the FIM model we created a dataset containing 100K random one-dimensional, target functions $f(t)$ on the interval $[0, 1]$, defined on a fine grid of 640 points.
-We sampled them from Gaussian Processes with mean $0$ and differnt kernels, namely a periodic kernel (30\%), a locally periodic kernel (30\%), a linear plus periodic kernel (20\%)  and a liner times periodic kernel (20\%).
-On top of the length and variance the kernels now also have a periodicity parameter. Both the length and periodicity are drawn from a beta distribution again. This time the values for the distribution are drawn from either $[1.0,2.0,5.0]$ or $[1,1,1]$.
-The varaince is drawn the same way as for the DeepONet dataset. We again sample random observations grid points $t$ on our functions, which become the input for our model. However since we want to predict the future embedding $k+1$ we split the observations into $5$ windows with $k=4$. Thus we only sample observations from the first $540$ points.
+Depending on whether or not we are creating a train or test dataset, the alpha and beta values for the beta distributions are randomly chosen from either $[1.0,2.0,5.0]$ or $[0.5,3.25,7.8]$ respectively. The variance for the kernel is drawn uniformly from the interval $[0.5, 2]$.
+we then sample random observations grid points $\tau$ on our functions, which become the input for our model. We sample a random subset between “min=50” and “max=90” points from the 128 grid points and pad the rest with $0$'s. We also create a binary mask for each observation grid, which tracks which indices are observed versus unobserved, that gets fed into our model along with the points.
+Half of our observation points are sampled regular and the other half irregular (in time). Since data is noisy in real-world applications we add Gaussian noise to the observations with a standard deviation drawn from $\mathcal{N}(0, 0.1)$ and mean $0$ after first normalizing our data.
+We normalize the observations to $[0, 1]$ and then perform z-scoring to normalize the function values, which then gets us our normalized values like this:
+\begin{align*}
+    \hat{f}(\tau) &= \frac{f(\tau) - \mu}{\sigma}\\
+    \hat{\tau} &= \frac{\tau - \tau^{min}}{\tau^{max} - \tau^{min}}
+\end{align*}
+With $\mu$ and $\sigma$ being the mean and standard deviation of the function values and $\tau^{min}$ and $\tau^{max}$ being the minimum and maximum of the observation points.\\
+For the FIM model we created a dataset containing 100K random one-dimensional, target functions $f(\tau)$ on the interval $[0, 1]$, defined on a fine grid of 640 points.
+We sampled them from Gaussian Processes with mean $0$ and different kernels, namely a periodic kernel $k_{p}$ (30\%), a locally periodic kernel $k_{lp}$ (30\%), a linear plus periodic kernel $k_{lpp}$ (20\%)  and a linear times periodic kernel $k_{ltp}$ (20\%).
+The kernels are defined as:
+\begin{align*}
+    k_{p}(\tau, \tau') &= \sigma^2 \cdot \exp\left(-\frac{2\sin^2(\pi|\tau - \tau'|/p)}{l^2}\right) \\
+    k_{lp}(\tau, \tau') &= k_{p}(\tau, \tau') \cdot \exp\left(-\frac{(\tau - \tau')^2}{2l^2}\right) \\
+    k_{lpp}(\tau, \tau') &= k_{p}(\tau, \tau') + \sigma^2 \cdot (\tau \cdot \tau'^T) \\
+    k_{ltp}(\tau, \tau') &= k_{p}(\tau, \tau') \cdot \sigma^2 \cdot (\tau \cdot \tau'^T)
+\end{align*}
+On top of the length $l$ and variance $\sigma^2$ the kernels now also have a periodicity parameter $p$. Both the length and periodicity are drawn from a beta distribution again. This time the values for the distribution are drawn from either $[1.0,2.0,5.0]$ or $[1,1,1]$.
+The variance is drawn the same way as for the DeepONet dataset. We again sample random observations grid points $\tau$ on our functions, which become the input for our model. However since we want to predict the future embedding $k+1$ we split the observations into $5$ windows with $k=4$. Thus we only sample observations from the first $540$ points.
 The first $4$ windows are then created the same way as for the DeepONet dataset, only that the standard deviation of the noise is now drawn from $\mathcal{N}(0, 0.025)$.
-On thing to note is that before we perform to normilizations we first normalize the whole function to $[0,1]$ and then we normalizue each window of $128$ points to $[0,1]$. We save the local statistics of each window into a scales array $s_l$, with:
-$s_l = [f(t)^{min}, f(t)^{max}, f(t)^{first}, f(t)^{last}, f(t)^{first} - f(t)^{last}, t^{first}, t^{last}, t^{first} - t^{last}]$. With $t$ being our sampled observations and $f$ being our noisy function values.
+On thing to note is that before we perform the normalizations of each $128$-point window we first normalize the whole function. Inspired by \cite{fim-l} we save the local statistics of each window into a scales array $s_l$, with:
+$s_l = [f(\tau)^{min}, f(\tau)^{max}, f(\tau)^{first}, f(\tau)^{last}, f(\tau)^{first} - f(\tau)^{last}, \tau^{first}, \tau^{last}, \tau^{first} - \tau^{last}]$. With $\tau$ being our sampled observations and $f$ being our noisy function values.
 
 
 \section{Model architecture}
