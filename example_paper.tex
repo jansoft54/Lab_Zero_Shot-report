@@ -92,15 +92,11 @@
 
 \end{icmlauthorlist}
 
-\icmlaffiliation{yyy}{Department of XXX, University of YYY, Location, Country}
-
-\icmlcorrespondingauthor{Firstname1 Lastname1}{first1.last1@xxx.edu}
-\icmlcorrespondingauthor{Firstname2 Lastname2}{first2.last2@www.uk}
+\icmlaffiliation{yyy}{University of Bonn}
 
 % You may provide any keywords that you
 % find helpful for describing your paper; these are used to populate
 % the "keywords" metadata in the PDF but will not be shown in the document
-\icmlkeywords{Machine Learning, ICML}
 
 \vskip 0.3in
 ]
@@ -116,14 +112,7 @@
 %\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
 
 \begin{abstract}
-Time series forecasting is critical in fields such as climate science, medicine, finance, and retail, where accurate predictions of future time horizons are essential.
-However, real-world time series data are often sparse and noisy, requiring robust interpolation and forecasting methods.
-Inspired by prior work on interpolating time-series and neural operators, we proposes a zero-shot machine learning framework that leverages neural operators for forecasting future time horizons from sparse observations.
-Our approach utilizes a two-step architecture: a local embedding model (FIM-l), embedding the sparse time series data and mapping these embeddings to smooth, continuous function spaces
-and a global prediction model (FIM) that predicts future time horizons based on the learned embeddings.
-To facilitate training and evaluation, we constructed a synthetic dataset derived from Gaussian Processes with various kernels and augmented by Gaussian noise.
-Modifications to the architecture, such as positional encoding and cosine similarity loss between embeddings, were explored to refine the models further.
-Experimental results on synthetic and real-world datasets undermine the importance of the data generation process and the integration of real-world datasets for enhancing model generalization and applicability in real world scenarios.
+    Time series forecasting plays a crucial role across domains, requiring accurate predictions of future horizons. This work introduces a zero-shot framework leveraging neural operators, consisting of a two-step architecture: a local embedding model (FIM-$\ell$) that maps sparse time-series data to continuous function spaces, and a global prediction model (FIM) for forecasting. A synthetic dataset generated via Gaussian Processes with diverse kernels and noise was used for training and evaluation. Architectural enhancements, including positional encoding and cosine similarity loss, were explored to improve performance. Results emphasize the significance of robust data generation and real-world dataset integration to enhance generalization and applicability.
 \end{abstract}
 
 \section{Introduction}
@@ -160,17 +149,26 @@ Building on these advancements, this work investigates neural approaches, like T
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Report Start %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problem Definition}
-The goal of our project was to create a model which forecasts the future points of a time-series in a zero-shot manner. Concretely we want to build a model, that takes in $k$ previous windows of length $L$ of a time-series and then predicts the next $k+1$ window of length $L$. The model should also work in a zero-shot manner, meaning it should work without requiring any fine-tuning on the specific data it will be used on. To accomplish this we constructed a synthetic training dataset, built to cover a wide range of different time-series for the model to learn in order to facilitate the zero-shot use of the model. We also added artificial noise into our time-series data to make the model more robust and usable for real-world data. Our model consists  of two separate networks, one for encoding the $k$ windows and a second one for predicting the window $k+1$ from the encodings. 
+The goal of our project was to create a model which forecasts the future points of a time-series in a zero-shot manner. Concretely we want to build a model, that takes in $n \in \mathbb{N}$ windows of length $L\in \mathbb{N}$ of a time-series and then predicts window $n+1$. The model should also work in a zero-shot manner, meaning it should work without requiring any fine-tuning on the specific data it will be used on. 
 
 \section{Methods}
 In this section we will look at the two main architectures that our model is based on. We will first look at DeepONet~\cite{Deeponet}, which encodes our time-series windows and fits a function on the noisy time points, in Section \ref{sec:DeepONet} and afterwards at FIM~\cite{fim-l}, which predicts the future encoding, in Section \ref{sec:FIM_arwin}.
 
-\subsection{DeepONet}\label{sec:DeepONet}
-Deep operator network (DeepONet)\cite{Deeponet} is a neural network architecture designed to learn nonlinear operators more accurately and efficiently than standard fully-connected networks. DeepONet consists of two sub-networks, a branch net and a trunk net. The branch net takes in $m$ fixed values of the input function $f(\tau)$ and encodes them while the trunk net takes in the time point $t$ for the output function we want to predict and encodes it. Both networks return a $p$-dimensional encoding and to obtain the output function value at our time point $t$, the scalar product between both encodings is calculated.
+\subsection{DeepONet (FIM-$\ell$)}\label{sec:DeepONet}
+The Deep Operator Network (DeepONet) \cite{Deeponet} is a neural network architecture designed to learn nonlinear operators, outperforming standard fully-connected networks. It comprises two sub-networks: a \emph{branch-net} and a \emph{trunk-net}. 
+The \emph{branch-net} encodes noisy observations at their respective time points into a latent representation, while the \emph{trunk-net} encodes the query time point \( t \) for the hidden function into its own latent representation. Both sub-networks produce \( p \)-dimensional encodings, and the output function value at the query time point \( t \) is obtained by calculating the scalar product of these encodings.
+In this work, we consider the implementation of DeepONet, as proposed by FIM \cite{fim-l}, which we will refer to as FIM-\(\ell\).
+
 
 
 \subsection{FIM}\label{sec:FIM_arwin}
-FIM\cite{fim-l} is a model originally designed for the interpolation of time series displaying temporal missing patterns. Meaning we have our $k$ embeddings from $1, 2, ..., q-1, q+1, ..., k$ with the embedding $q$ missing. The task of FIM was then to predict the embedding for window $q$ from the other embeddings. In our work we used the core ideas of FIM but for forecasting the future embedding $k+1$. For this FIM takes in the embeddings $h_1, .., h_k$ along with local scale embeddings $s_1, .., s_k$. These scale embeddings are created by saving the normalization values, used to normalize the time-series data for each respective window, and feeding them through a MLP to obtain an embedding. Both embeddings then get concatenated and fed through a transformer and summary network to obtain the embedding $h_{k+1}$. With this embedding we can use the trunk net from DeepONet to obtain a function for future time points $t$.
+FIM (Seifner et al., 2024) is a model originally designed for the interpolation of time series with temporal missing patterns. Given \( k \) embeddings \( \mathbf{h}_1, \mathbf{h}_2, \ldots, \mathbf{h}_{q-1}, \mathbf{h}_{q+1}, \ldots, \mathbf{h}_k \), where the embedding at position \( q \) is missing, the objective of FIM is to predict the missing embedding \( \mathbf{h}_q \) based on the remaining embeddings.
+
+The task of FIM is to predict the embedding for a given window \( q \) using the embeddings from other windows. In our work, we extended the core ideas of FIM to focus on forecasting the future embedding \( h_{k+1} \).
+
+To achieve this, FIM takes as input the embeddings \( h_1, \ldots, h_k \) and their corresponding local scale embeddings \( s_1, \ldots, s_k \). The scale embeddings are derived by capturing the normalization values used to standardize the time-series data for each window and passing these values through a multi-layer perceptron (MLP) to obtain the embeddings.
+
+The embeddings \( h_i \) and \( s_i \) are concatenated for each window and processed through a Transformer followed by a summary network to compute the future embedding \( h_{k+1} \). Finally, the embedding \( h_{k+1} \) is input into the trunk network of FIM-$\ell$ to generate a continuous function \( f(t) \), enabling predictions for future time points \( t \).
 
 \section{Synthetic Dataset}
 \label{sec:dataset_arwin}
@@ -188,12 +186,10 @@ We then sample random observation grid points \(\tau\) from our functions, which
 
 Half of the observation points \(\tau\) are sampled regularly, while the other half are sampled irregularly in time. To account for noise in real-world applications, Gaussian noise \(\epsilon \sim \mathcal{N}(0, 0.1)\) with mean \(0\) is added to the observations after normalizing the data.
 
-The normalization process involves applying z-scoring to the function values \(f(\tau)\) and min-max scaling to the time points \(\tau\). The normalized values are computed as follows:
-
+The normalization process involves applying z-scoring to the function values \(f(\tau)\) and min-max scaling to the time points \(\tau\). The normalized values are computed as follows
 \[
 \hat{f}(\tau) = \frac{f(\tau) - \mu}{\sigma}, \quad \hat{\tau} = \frac{\tau - \tau^{\text{min}}}{\tau^{\text{max}} - \tau^{\text{min}}},
 \]
-
 where \(\mu\) and \(\sigma\) denote the mean and standard deviation of the function values \(f(\tau)\), and \(\tau^{\text{min}}\) and \(\tau^{\text{max}}\) represent the minimum and maximum values of the observation points \(\tau\). This approach ensures that the function values \(\hat{f}(\tau)\) are standardized, while the time points \(\hat{\tau}\) are scaled to the interval \([0, 1]\).
 \\
 For the FIM model, we created a dataset comprising \(100{,}000\) random one-dimensional target functions \(f(\tau)\) defined on the interval \([0, 1]\) and evaluated on a fine grid of 640 points. These functions were sampled from Gaussian Processes with a mean function of \(0\) and different kernels. The dataset distribution is composed as follows: periodic kernel \(k_p\) (30\%), locally periodic kernel \(k_{lp}\) (30\%), linear plus periodic kernel \(k_{lpp}\) (20\%), and linear times periodic kernel \(k_{ltp}\) (20\%).
@@ -229,7 +225,7 @@ where \(\tau\) represents the sampled observations, and \(f\) denotes the noisy 
 
 
 \section{Model architecture}
-Next, we proceed with a detailed description of the architectures for both the FIM-l and FIM models. The FIM-l model serves as an operator, aiming to learn the underlying function from noisy samples, while the FIM model is designed as a forecasting framework. Our description closely follows the original implementations of both architectures, as outlined in the FIM paper \cite{fim-l}.
+Next, we proceed with a detailed description of the architectures for both the FIM-$\ell$ and FIM models. The FIM-$\ell$ model serves as an operator, aiming to learn the underlying function from noisy samples, while the FIM model is designed as a forecasting framework. Our description closely follows the original implementations of both architectures, as outlined in the FIM paper \cite{fim-l}.
 
 \subsection{FIM-$\ell$}\label{sec:FIM-l}
 The primary aim of the FIM-$\ell$ model is to learn the underlying function $f(\tau)$ that has been augmented by noise to generate the observed time series $(y_i, \tau_i)$. The model should allow querying interpolated values of the underlying function $f(\tau)$ at arbitrary time points, including those not present in the observed data.
@@ -247,7 +243,7 @@ Following the work of DeepONet, we define a \emph{branch net}-equivalent network
 \[
     \mathbf{u^{\theta}} = \phi^{\theta}_3\big(\psi^{\theta}_0(\mathbf{y^{\theta}_1}, \dots, \mathbf{y^{\theta}_l})\big).
 \]
-Finally, to generate a sequence-length-agnostic embedding, we take \(\mathbf{u}^{\theta}\) from the branch network and feed it into a Multi-Head Attention \cite{} summary block $\lambda^{\theta}_0$, where \(\mathbf{u}^{\theta}\) serves as the \emph{keys} and \emph{values}, and a \emph{learnable} vector \(q_{\theta^*}\) is used as the \emph{query}. The attention calculation is defined as 
+Finally, to generate a sequence-length-agnostic embedding, we take \(\mathbf{u}^{\theta}\) from the branch network and feed it into a Multi-Head Attention \cite{vaswani2023attentionneed} summary block $\lambda^{\theta}_0$, where \(\mathbf{u}^{\theta}\) serves as the \emph{keys} and \emph{values}, and a \emph{learnable} vector \(q_{\theta^*}\) is used as the \emph{query}. The attention calculation is defined as 
 
 \[
 \mathbf{h^{\theta}} = \text{softmax}\left(\frac{q_{\theta^*} K^\top}{\sqrt{d_k}}\right) V = \lambda^{\theta}_0(\mathbf{u}^{\theta}),
@@ -434,7 +430,7 @@ In Table~\ref{tab:evaluation_results}, we present the results on our validation 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{assets/validation1.png}
-    \caption{Your caption here.}
+    \caption{Example of good performance on a validation example exhibiting a clear pattern.}
     \label{fig:validation1}
 \end{figure}
 Looking at the plots of the predictions generated by our model on the validation set, we observed that the model performs well on data with high periodicity (see Figure~\ref{fig:validation1}). Since the functions and the parameters for the Gaussian process are sampled randomly, it is possible to encounter functions with less clear patterns (see Figure~\ref{fig:validation2}). These functions pose a challenge for the model, as it cannot anticipate their behavior in advance. This results in the model learning the average course of such functions. We postulate that this behavior negatively impacts the model's performance on functions where distinct patterns are present. It's therefore crucial to have checks in place to ensure that the model is only trained on data that exhibits clear patterns or aligns with the desired characteristics of the target task. This may help prevent the model from overfitting to noise or learning irrelevant trends.
@@ -443,8 +439,7 @@ Looking at the plots of the predictions generated by our model on the validation
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{assets/validation2.png}
-    \caption{Your caption here.}
-    \label{fig:validation2}
+    \caption{Example of bad performance on a validation example a less clear pattern.}    \label{fig:validation2}
 \end{figure}
 
 \subsection{Findings on ETTh1}
@@ -469,7 +464,8 @@ The same procedure is applied for the time horizon of 192.
 We evaluate our different model variants on the entire ETTh1 dataset in a zero-shot manner, meaning that we evaluate on all sub-datasets contained within ETTh1 and calculate the average performance.
 Additionally, we compare our model to the one proposed by TimesFM \cite{das2024decoderonlyfoundationmodeltimeseries}, using their accuracy score as a benchmark.
 As shown in Table~\ref{tab:evaluation_results}, positional encoding does not appear to offer a significant benefit over the standard model. However, the PE + CSL approach provides slightly better performance. We also observe that the zero-shot performance of TimesFM on ETTh1-96 is much better than that of our current model. It is important to note, however, that TimesFM has been trained on a variety of data, both real-world and synthetic, and is approximately an order of magnitude larger in terms of parameter count.
-We observe the same ordering of models for a horizon window of 192, where the PE + CSL version performs slightly better than the vanilla and PE versions.
+We observe the same ordering of models for a horizon window of 192, where the PE + CSL version performs slightly better than the vanilla and PE versions. We additionally provide plots showing our model's performance on the live dataset provided by our instructors (see Appendix~\ref{sec:appendix}).
+
 
 \begin{figure}[h!]
     \centering
@@ -516,6 +512,8 @@ Our findings highlight the importance of carefully constructing datasets that ex
 \appendix
 \onecolumn
 \section{Appendix}
+\label{sec:appendix}
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{assets/test1.png}
