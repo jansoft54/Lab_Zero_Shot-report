@@ -115,6 +115,16 @@
 
 %\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
 
+\begin{abstract}
+Time series forecasting is critical in fields such as climate science, medicine, finance, and retail, where accurate predictions of future time horizons are essential.
+However, real-world time series data are often sparse and noisy, requiring robust interpolation and forecasting methods.
+Inspired by prior work on interpolating time-series and neural operators, we proposes a zero-shot machine learning framework that leverages neural operators for forecasting future time horizons from sparse observations.
+Our approach utilizes a two-step architecture: a local embedding model (FIM-l), embedding the sparse time series data and mapping these embeddings to smooth, continuous function spaces
+and a global prediction model (FIM) that predicts future time horizons based on the learned embeddings.
+To facilitate training and evaluation, we constructed a synthetic dataset derived from Gaussian Processes with various kernels and augmented by Gaussian noise.
+Modifications to the architecture, such as positional encoding and cosine similarity loss between embeddings, were explored to refine the models further.
+Experimental results on synthetic and real-world datasets undermine the importance of the data generation process and the integration of real-world datasets for enhancing model generalization and applicability in real world scenarios.
+\end{abstract}
 
 \section{Introduction}
 

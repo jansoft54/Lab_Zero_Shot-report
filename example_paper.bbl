@@ -5,16 +5,14 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Das et~al.(2024)Das, Kong, Sen, and
-  Zhou]{das2024decoderonlyfoundationmodeltimeseries}
+\bibitem[Das et~al.(2024)Das, Kong, Sen, and Zhou]{das2024decoderonlyfoundationmodeltimeseries}
 Das, A., Kong, W., Sen, R., and Zhou, Y.
 \newblock A decoder-only foundation model for time-series forecasting, 2024.
 \newblock URL \url{https://arxiv.org/abs/2310.10688}.
 
 \bibitem[Juang et~al.(2017)Juang, Huang, Huang, Cheng, and Wann]{medicine}
 Juang, W.-C., Huang, S.-J., Huang, F.-D., Cheng, P.-W., and Wann, S.-R.
-\newblock Application of time series analysis in modelling and forecasting
-  emergency department visits in a medical centre in southern taiwan.
+\newblock Application of time series analysis in modelling and forecasting emergency department visits in a medical centre in southern taiwan.
 \newblock \emph{BMJ Open}, 7\penalty0 (11), 2017.
 \newblock ISSN 2044-6055.
 \newblock \doi{10.1136/bmjopen-2017-018628}.
@@ -22,66 +20,51 @@ Juang, W.-C., Huang, S.-J., Huang, F.-D., Cheng, P.-W., and Wann, S.-R.
 
 \bibitem[Lu et~al.(2021)Lu, Jin, Pang, Zhang, and Karniadakis]{Deeponet}
 Lu, L., Jin, P., Pang, G., Zhang, Z., and Karniadakis, G.~E.
-\newblock Learning nonlinear operators via deeponet based on the universal
-  approximation theorem of operators.
-\newblock \emph{Nature Machine Intelligence}, 3\penalty0 (3):\penalty0
-  218–229, March 2021.
+\newblock Learning nonlinear operators via deeponet based on the universal approximation theorem of operators.
+\newblock \emph{Nature Machine Intelligence}, 3\penalty0 (3):\penalty0 218–229, March 2021.
 \newblock ISSN 2522-5839.
 \newblock \doi{10.1038/s42256-021-00302-5}.
 \newblock URL \url{http://dx.doi.org/10.1038/s42256-021-00302-5}.
 
 \bibitem[Seifner et~al.(2024)Seifner, Cvejoski, Körner, and Sánchez]{fim-l}
 Seifner, P., Cvejoski, K., Körner, A., and Sánchez, R.~J.
-\newblock Zero-shot imputation with foundation inference models for dynamical
-  systems.
-\newblock In \emph{Submitted to The Thirteenth International Conference on
-  Learning Representations}, 2024.
+\newblock Zero-shot imputation with foundation inference models for dynamical systems.
+\newblock In \emph{Submitted to The Thirteenth International Conference on Learning Representations}, 2024.
 \newblock URL \url{https://openreview.net/forum?id=NPSZ7V1CCY}.
 \newblock under review.
 
 \bibitem[Sezer et~al.(2020)Sezer, Gudelek, and Ozbayoglu]{finance}
 Sezer, O.~B., Gudelek, M.~U., and Ozbayoglu, A.~M.
-\newblock Financial time series forecasting with deep learning : A systematic
-  literature review: 2005–2019.
+\newblock Financial time series forecasting with deep learning : A systematic literature review: 2005–2019.
 \newblock \emph{Applied Soft Computing}, 90:\penalty0 106181, 2020.
 \newblock ISSN 1568-4946.
 \newblock \doi{https://doi.org/10.1016/j.asoc.2020.106181}.
-\newblock URL
-  \url{https://www.sciencedirect.com/science/article/pii/S1568494620301216}.
+\newblock URL \url{https://www.sciencedirect.com/science/article/pii/S1568494620301216}.
 
 \bibitem[Sousa et~al.(2022)Sousa, Tomé, and Moreira]{retail}
 Sousa, M., Tomé, A.~M., and Moreira, J.
-\newblock Long-term forecasting of hourly retail customer flow on intermittent
-  time series with multiple seasonality.
-\newblock \emph{Data Science and Management}, 5\penalty0 (3):\penalty0
-  137--148, 2022.
+\newblock Long-term forecasting of hourly retail customer flow on intermittent time series with multiple seasonality.
+\newblock \emph{Data Science and Management}, 5\penalty0 (3):\penalty0 137--148, 2022.
 \newblock ISSN 2666-7649.
 \newblock \doi{https://doi.org/10.1016/j.dsm.2022.07.002}.
-\newblock URL
-  \url{https://www.sciencedirect.com/science/article/pii/S2666764922000273}.
+\newblock URL \url{https://www.sciencedirect.com/science/article/pii/S2666764922000273}.
 
-\bibitem[Stellwagen \& Tashman(2013)Stellwagen and
-  Tashman]{stellwagen2013arima}
+\bibitem[Stellwagen \& Tashman(2013)Stellwagen and Tashman]{stellwagen2013arima}
 Stellwagen, E. and Tashman, L.
 \newblock Arima: The models of box and jenkins.
-\newblock \emph{Foresight: The International Journal of Applied Forecasting},
-  \penalty0 (30), 2013.
+\newblock \emph{Foresight: The International Journal of Applied Forecasting}, \penalty0 (30), 2013.
 
-\bibitem[Vaswani et~al.(2023)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez,
-  Kaiser, and Polosukhin]{vaswani2023attentionneed}
-Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A.~N.,
-  Kaiser, L., and Polosukhin, I.
+\bibitem[Vaswani et~al.(2023)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, and Polosukhin]{vaswani2023attentionneed}
+Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A.~N., Kaiser, L., and Polosukhin, I.
 \newblock Attention is all you need, 2023.
 \newblock URL \url{https://arxiv.org/abs/1706.03762}.
 
 \bibitem[Waqas et~al.(2024)Waqas, Humphries, and Hlaing]{climate}
 Waqas, M., Humphries, U.~W., and Hlaing, P.~T.
-\newblock Time series trend analysis and forecasting of climate variability
-  using deep learning in thailand.
+\newblock Time series trend analysis and forecasting of climate variability using deep learning in thailand.
 \newblock \emph{Results in Engineering}, 24:\penalty0 102997, 2024.
 \newblock ISSN 2590-1230.
 \newblock \doi{https://doi.org/10.1016/j.rineng.2024.102997}.
-\newblock URL
-  \url{https://www.sciencedirect.com/science/article/pii/S2590123024012520}.
+\newblock URL \url{https://www.sciencedirect.com/science/article/pii/S2590123024012520}.
 
 \end{thebibliography}
