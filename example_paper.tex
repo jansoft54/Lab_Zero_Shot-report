@@ -128,19 +128,24 @@ The core idea of our method is to train a neural operator capable of mapping spa
 
 The contributions of this work are as follows: (1) We create a synthetic dataset with 100K one-dimensional target functions sampled from a Gaussian Processes using multiple variants of kernels.
 
-(2) Following the work of \cite{fim-l}, we utilize two models: FIM-$\ell$ and FIM. The first model, FIM-$\ell$, is responsible for learning local embeddings for localized windows of a given set of observations. These embeddings are then utilized by the second model, FIM, to predict the underlying function at future time horizons.
+(2) Following the work of \cite{fim-l}, we utilize two models: FIM-$\ell$, based on the work of DeepONet \cite{Deeponet}, and FIM \cite{fim-l}. The first model, FIM-$\ell$, is responsible for learning local embeddings for localized windows of a given set of observations. These embeddings are then utilized by the second model, FIM, to predict the underlying function at future time horizons.
 
  (3) Finally, we aim to refine these architectures by experimenting with different variations of the architecture and training objectives. These modifications are then evaluated on both our synthetic validation datasets and a real-world dataset.
 
 \section{Related Work}
-Statistical methods such as ARIMA have been foundational in time series forecasting. ARIMA, which stands for autoregressive (AR), integrated (I), and moving average (MA), combines these three components to model stationary time series data. The autoregressive component (AR) forecasts future values as a linear combination of previously observed values. The integrated component (I) refers to the number of differencing operations (order $d$) required to make the time series stationary. Stationarity, a key assumption, is achieved through transformations such as differencing or logarithms to stabilize the mean and variance. The moving average component (MA) uses past forecast errors rather than observed values for predictions. Combining these components, the full ARIMA model can be expressed as:
-\begin{equation} 
-y't = c + \phi_1 y'{t-1} + \dots + \phi_p y'{t-p} + \epsilon_t + \theta_1 \epsilon{t-1} + \dots + \theta_q \epsilon_{t-q},
-\end{equation}
-where $y'_t$ represents the differenced version of the time series, $\phi$ and $\theta$ are the model coefficients, and $\epsilon_t$ represents the forecast error.  
-Although ARIMA performs well on univariate and stationary datasets, it faces limitations with non-linear patterns and high-dimensional data \cite{stellwagen2013arima}. To address these challenges, deep learning approaches have gained increasing attention \cite{stellwagen2013arima}. One recent advance is TimesFM \cite{das2024decoderonlyfoundationmodeltimeseries}, a decoder-only foundation model designed for time series forecasting. Inspired by large language models, TimesFM is pre-trained on a diverse corpus of real-world and synthetic time series data, enabling it to capture complex temporal patterns across domains. By leveraging a decoder-style attention mechanism and input patching, TimesFM achieves good zero-shot forecasting performance on both in-distribution and out-of-distribution datasets. This method does not require fine-tuning and can handle different forecasting horizons and granularities.
-Building on these advances, this work explores neural approaches, such as TimesFM, to tackle challenges in data interpolation and forecasting. Another important foundation of our work is DeepONet \cite{Deeponet}, which plays a central role in our model. Its architecture and integration into our framework are detailed in Section~\ref{sec:DeepONet}.
+Statistical methods, such as ARIMA, have a long-standing history in time series forecasting. ARIMA, which stands for Autoregressive (AR), Integrated (I), and Moving Average (MA), combines these three components to model stationary time series data—where the mean and variance of the underlying process remain constant over time.
 
+The autoregressive (AR) component predicts future values as a linear combination of previously observed values. The integrated (I) component addresses non-stationarity by applying differencing operations (of order $d$) to stabilize the mean and variance of the time series. Stationarity, a key assumption of ARIMA, is achieved through transformations such as differencing or logarithmic scaling. Finally, the moving average (MA) component incorporates past forecast errors into predictions, rather than relying solely on observed values.
+
+These components are combined into the full ARIMA model, which is expressed as:
+\begin{equation}
+y'_t = c + \phi_1 y'_{t-1} + \dots + \phi_p y'_{t-p} + \epsilon_t + \theta_1 \epsilon_{t-1} + \dots + \theta_q \epsilon_{t-q},
+\end{equation}
+where $y'_t$ represents the differenced time series, $\phi$ and $\theta$ are the model coefficients, and $\epsilon_t$ is the forecast error. This formulation allows ARIMA to effectively capture the structure of stationary time series data while accounting for both observed values and forecast errors.
+
+Although ARIMA performs well on univariate and stationary datasets, it faces limitations with non-linear patterns and high-dimensional data \cite{stellwagen2013arima}. To address these challenges, deep learning approaches have gained increasing attention \cite{stellwagen2013arima}. One recent advance is TimesFM \cite{das2024decoderonlyfoundationmodeltimeseries}, a decoder-only foundation model designed for time series forecasting. Inspired by large language models, TimesFM is pre-trained on a diverse corpus of real-world and synthetic time series data, enabling it to capture complex temporal patterns across domains. It utilizes a decoder-style attention mechanism and input patching, similar to the approach used in vision transformers. TimesFM demonstrates strong zero-shot forecasting performance on both in-distribution and out-of-distribution (zero-shot) datasets, without requiring fine-tuning. Additionally, it is capable of handling varying forecasting horizons and time granularities.
+
+Building on these advancements, this work investigates neural approaches, like TimesFM, to address challenges in time series forecasting.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Report Start %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
