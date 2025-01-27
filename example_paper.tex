@@ -63,7 +63,7 @@
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
-\icmltitlerunning{Submission and Formatting Instructions for ICML 2025}
+\icmltitlerunning{Zero-Shot Forecasting and Neural Operators - Master Lab}
 
 \begin{document}
 
@@ -84,17 +84,15 @@
 % You can specify symbols, otherwise they are numbered in order.
 % Ideally, you should not use this facility. Affiliations will be numbered
 % in order of appearance and this is the preferred way.
-\icmlsetsymbol{equal}{*}
 
 \begin{icmlauthorlist}
-\icmlauthor{Arwin Sadaghiani}{equal,yyy}
-\icmlauthor{Jan Hardtke}{equal,yyy,comp}
-\icmlauthor{Nadia Gharbi}{comp}
+\icmlauthor{Arwin Sadaghiani}{yyy}
+\icmlauthor{Jan Hardtke}{yyy}
+\icmlauthor{Nadia Gharbi}{yyy}
 
 \end{icmlauthorlist}
 
 \icmlaffiliation{yyy}{Department of XXX, University of YYY, Location, Country}
-\icmlaffiliation{comp}{Company Name, Location, Country}
 
 \icmlcorrespondingauthor{Firstname1 Lastname1}{first1.last1@xxx.edu}
 \icmlcorrespondingauthor{Firstname2 Lastname2}{first2.last2@www.uk}
@@ -116,481 +114,30 @@
 % Remove it (just {}) if you do not need this facility.
 
 %\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
-\printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
 
-\begin{abstract}
-A
-\end{abstract}
 
-\section{Structure}
+\section{Introduction}
+Time series modeling has long been a core area of research, underpinning diverse applications in climate modeling and weather forecasting \cite{climate}, life sciences \cite{li} and medicine  \cite{medicine}, energy and traffic prediction,  commercial decision making in retail  \cite{retail} or in finance \cite{finance}. A critical focus of machine learning research is the ability to capture temporal dynamics in a purely data-driven manner. This has led to the development of deep learning architectures specifically designed to handle time series data. In practice, time series data, ideally a continuous function, is often represented by sparse observations or measurements over time. Data interpolation becomes essential to transform these discrete data points into a continuous time function. Despite potential incoherence in the raw measurements, it is generally assumed that the time series data are derived from an underlying hidden function. By approximating this function, we aim to uncover the structure of the data and use it for tasks such as forecasting future values, commonly referred to as horizon prediction.
 
-- abstract \\
-- a brief introduction (Nadia) \\ 
-- a discussion of related work (Decoder Only, Statistical models like ARIMA, (briefly FIM-l and DeepONet with reference to chapter conceptual aspects) ... do more research...) (Nadia) \\ 
-- An explanation of the main conceptual aspects (e.g. DeepONets, random function generation and maybe zero-shot learning) is expected. (Arwin) \\ 
-- In an experimental section, give details for reproducibility of your work (e.g. hyperparameters, training objectives, hardware, runtime...). (Jan) \\ 
-- A results section could include a description of the tasks and your findings (use tables and figures to present your results). \\
-- Finish the report with a short concluding section.
+In this report, we present a machine learning model designed to build a time series forecaster using a neural operator in a zero-shot setting. Zero-shot learning has received significant attention in recent research \cite{das2024decoderonlyfoundationmodeltimeseries}. This approach enables a trained model to generalize across datasets, including those outside the original distribution. In essence, the goal is to develop a foundation model capable of handling diverse datasets. However, obtaining sufficient time series data to represent the wide range of scenarios found in nature poses a significant challenge. To address this, we propose generating synthetic datasets with representative functions that exhibit typical characteristics, such as variability in trends, periodicity, and noise.
 
-- Note that you are encouraged to further improve and explore the models for each task! (Jan)
+For data generation, we leverage the maximum entropy principle, which allows us to construct the most likely noise distribution based on observable properties such as mean and variance. This principle provides a systematic method for modeling noise, often leading to Gaussian distributions as the most likely noise family. By adhering to the central limit theorem, which suggests that aggregated phenomena tend to converge to a Gaussian distribution, we ensure that the generated noise aligns closely with natural occurrences. This strategy allows our model to learn across a broad spectrum of time series behavior, facilitating effective zero-shot learning.
 
-\section{Electronic Submission}
-\label{submission}
+A promising approach to address the challenges of data interpolation is the use of neural operators. A neural operator is a mathematical concept designed to learn mappings between function spaces, such as infinite dimensional spaces. It takes a representation of a function, such as sensor data, and maps it to another function, effectively transforming discrete observations into a continuous representation. In other words, given a set of time points as input, the neural operator produces the corresponding values of the learned function. This capability makes neural operators particularly well-suited for tasks requiring a deep understanding of functional behavior and accurate interpolation.
+In our case, the neural operator proves useful for addressing key challenges in data interpolation. Facilitates missing data interpolation by capturing the comprehensive behavior of the underlying function, enabling the reconstruction of a smooth and continuous representation. Additionally, it encodes local fluctuations in the data into a meaningful form, allowing for a more nuanced and accurate representation of the underlying temporal dynamics.
 
-Submission to ICML 2025 will be entirely electronic, via a web site
-(not email). Information about the submission process and \LaTeX\ templates
-are available on the conference web site at:
-\begin{center}
-\textbf{\texttt{http://icml.cc/}}
-\end{center}
+In summary, this work focuses on data interpolation using a neural operator, assuming that time series data points originate from an underlying continuous time function. The goal is to train a model capable of deriving continuous time functions in a zero-shot manner, learning local representations of functions for forecasting, and inferring the hidden continuous time function to enable both retrospective understanding and future predictions.
 
-The guidelines below will be enforced for initial submissions and
-camera-ready copies. Here is a brief summary:
-\begin{itemize}
-\item Submissions must be in PDF\@. 
-\item If your paper has appendices, submit the appendix together with the main body and the references \textbf{as a single file}. Reviewers will not look for appendices as a separate PDF file. So if you submit such an extra file, reviewers will very likely miss it.
-\item Page limit: The main body of the paper has to be fitted to 8 pages, excluding references and appendices; the space for the latter two is not limited in pages, but the total file size may not exceed 10MB. For the final version of the paper, authors can add one extra page to the main body.
-\item \textbf{Do not include author information or acknowledgements} in your
-    initial submission.
-\item Your paper should be in \textbf{10 point Times font}.
-\item Make sure your PDF file only uses Type-1 fonts.
-\item Place figure captions \emph{under} the figure (and omit titles from inside
-    the graphic file itself). Place table captions \emph{over} the table.
-\item References must include page numbers whenever possible and be as complete
-    as possible. Place multiple citations in chronological order.
-\item Do not alter the style template; in particular, do not compress the paper
-    format by reducing the vertical spaces.
-\item Keep your abstract brief and self-contained, one paragraph and roughly
-    4--6 sentences. Gross violations will require correction at the
-    camera-ready phase. The title should have content words capitalized.
-\end{itemize}
+The contributions of this work are as follows: (1) We create a synthetic dataset with 100K one-dimensional target functions. These functions are sampled from Gaussian processes with periodic, locally periodic, linear plus periodic, and linear times periodic kernels. We add Gaussian noise, sample random observation grids, and split the series into normalized windows to prepare the data for the following models. (2) We build a first inference model (IM1) that uses a transformer to process time series tuples $(y_1, t_1), \dots, (y_L, t_L)$. We introduce a summary network with attention to combine embeddings from the branch network and integrate these with the outputs of the trunk network using a Multilayer Perceptron (MLP). The model is trained on the synthetic dataset. (3) Finally, we develop a second inference model (IM2) that uses embeddings from IM1 to encode local fluctuations. These embeddings are combined with normalization statistics and processed through another transformer and summary network. The model reconstructs the last unseen window in the time series, while keeping IM1 parameters fixed.
+\section{Related Work}
+Statistical methods such as ARIMA have been foundational in time series forecasting. ARIMA, which stands for autoregressive (AR), integrated (I), and moving average (MA), combines these three components to model stationary time series data. The autoregressive component (AR) forecasts future values as a linear combination of previously observed values. The integrated component (I) refers to the number of differencing operations (order $d$) required to make the time series stationary. Stationarity, a key assumption, is achieved through transformations such as differencing or logarithms to stabilize the mean and variance. The moving average component (MA) uses past forecast errors rather than observed values for predictions. Combining these components, the full ARIMA model can be expressed as:
+\begin{equation} 
+y't = c + \phi_1 y'{t-1} + \dots + \phi_p y'{t-p} + \epsilon_t + \theta_1 \epsilon{t-1} + \dots + \theta_q \epsilon_{t-q},
+\end{equation}
+where $y'_t$ represents the differenced version of the time series, $\phi$ and $\theta$ are the model coefficients, and $\epsilon_t$ represents the forecast error.  
+Although ARIMA performs well on univariate and stationary datasets, it faces limitations with non-linear patterns and high-dimensional data \cite{stellwagen2013arima}. To address these challenges, deep learning approaches have gained increasing attention \cite{stellwagen2013arima}. One recent advance is TimesFM \cite{das2024decoderonlyfoundationmodeltimeseries}, a decoder-only foundation model designed for time series forecasting. Inspired by large language models, TimesFM is pre-trained on a diverse corpus of real-world and synthetic time series data, enabling it to capture complex temporal patterns across domains. By leveraging a decoder-style attention mechanism and input patching, TimesFM achieves good zero-shot forecasting performance on both in-distribution and out-of-distribution datasets. This method does not require fine-tuning and can handle different forecasting horizons and granularities.
+Building on these advances, this work explores neural approaches, such as TimesFM, to tackle challenges in data interpolation and forecasting. Another important foundation of our work is DeepONet \cite{Deeponet}, which plays a central role in our model. Its architecture and integration into our framework are detailed in Section~\ref{sec:DeepONet}.
 
-\subsection{Submitting Papers}
-
-\textbf{Anonymous Submission:} ICML uses double-blind review: no identifying
-author information may appear on the title page or in the paper
-itself. \cref{author info} gives further details.
-
-\medskip
-
-Authors must provide their manuscripts in \textbf{PDF} format.
-Furthermore, please make sure that files contain only embedded Type-1 fonts
-(e.g.,~using the program \texttt{pdffonts} in linux or using
-File/DocumentProperties/Fonts in Acrobat). Other fonts (like Type-3)
-might come from graphics files imported into the document.
-
-Authors using \textbf{Word} must convert their document to PDF\@. Most
-of the latest versions of Word have the facility to do this
-automatically. Submissions will not be accepted in Word format or any
-format other than PDF\@. Really. We're not joking. Don't send Word.
-
-Those who use \textbf{\LaTeX} should avoid including Type-3 fonts.
-Those using \texttt{latex} and \texttt{dvips} may need the following
-two commands:
-
-{\footnotesize
-\begin{verbatim}
-dvips -Ppdf -tletter -G0 -o paper.ps paper.dvi
-ps2pdf paper.ps
-\end{verbatim}}
-It is a zero following the ``-G'', which tells dvips to use
-the config.pdf file. Newer \TeX\ distributions don't always need this
-option.
-
-Using \texttt{pdflatex} rather than \texttt{latex}, often gives better
-results. This program avoids the Type-3 font problem, and supports more
-advanced features in the \texttt{microtype} package.
-
-\textbf{Graphics files} should be a reasonable size, and included from
-an appropriate format. Use vector formats (.eps/.pdf) for plots,
-lossless bitmap formats (.png) for raster graphics with sharp lines, and
-jpeg for photo-like images.
-
-The style file uses the \texttt{hyperref} package to make clickable
-links in documents. If this causes problems for you, add
-\texttt{nohyperref} as one of the options to the \texttt{icml2025}
-usepackage statement.
-
-
-\subsection{Submitting Final Camera-Ready Copy}
-
-The final versions of papers accepted for publication should follow the
-same format and naming convention as initial submissions, except that
-author information (names and affiliations) should be given. See
-\cref{final author} for formatting instructions.
-
-The footnote, ``Preliminary work. Under review by the International
-Conference on Machine Learning (ICML). Do not distribute.'' must be
-modified to ``\textit{Proceedings of the
-$\mathit{42}^{nd}$ International Conference on Machine Learning},
-Vancouver, Canada, PMLR 267, 2025.
-Copyright 2025 by the author(s).''
-
-For those using the \textbf{\LaTeX} style file, this change (and others) is
-handled automatically by simply changing
-$\mathtt{\backslash usepackage\{icml2025\}}$ to
-$$\mathtt{\backslash usepackage[accepted]\{icml2025\}}$$
-Authors using \textbf{Word} must edit the
-footnote on the first page of the document themselves.
-
-Camera-ready copies should have the title of the paper as running head
-on each page except the first one. The running title consists of a
-single line centered above a horizontal rule which is $1$~point thick.
-The running head should be centered, bold and in $9$~point type. The
-rule should be $10$~points above the main text. For those using the
-\textbf{\LaTeX} style file, the original title is automatically set as running
-head using the \texttt{fancyhdr} package which is included in the ICML
-2025 style file package. In case that the original title exceeds the
-size restrictions, a shorter form can be supplied by using
-
-\verb|\icmltitlerunning{...}|
-
-just before $\mathtt{\backslash begin\{document\}}$.
-Authors using \textbf{Word} must edit the header of the document themselves.
-
-\section{Format of the Paper}
-
-All submissions must follow the specified format.
-
-\subsection{Dimensions}
-
-
-
-
-The text of the paper should be formatted in two columns, with an
-overall width of 6.75~inches, height of 9.0~inches, and 0.25~inches
-between the columns. The left margin should be 0.75~inches and the top
-margin 1.0~inch (2.54~cm). The right and bottom margins will depend on
-whether you print on US letter or A4 paper, but all final versions
-must be produced for US letter size.
-Do not write anything on the margins.
-
-The paper body should be set in 10~point type with a vertical spacing
-of 11~points. Please use Times typeface throughout the text.
-
-\subsection{Title}
-
-The paper title should be set in 14~point bold type and centered
-between two horizontal rules that are 1~point thick, with 1.0~inch
-between the top rule and the top edge of the page. Capitalize the
-first letter of content words and put the rest of the title in lower
-case.
-
-\subsection{Author Information for Submission}
-\label{author info}
-
-ICML uses double-blind review, so author information must not appear. If
-you are using \LaTeX\/ and the \texttt{icml2025.sty} file, use
-\verb+\icmlauthor{...}+ to specify authors and \verb+\icmlaffiliation{...}+ to specify affiliations. (Read the TeX code used to produce this document for an example usage.) The author information
-will not be printed unless \texttt{accepted} is passed as an argument to the
-style file.
-Submissions that include the author information will not
-be reviewed.
-
-\subsubsection{Self-Citations}
-
-If you are citing published papers for which you are an author, refer
-to yourself in the third person. In particular, do not use phrases
-that reveal your identity (e.g., ``in previous work, we
-have shown \ldots'').
-
-Do not anonymize citations in the reference section. The only exception are manuscripts that are
-not yet published (e.g., under submission). If you choose to refer to
-such unpublished manuscripts, anonymized copies have
-to be submitted
-as Supplementary Material via OpenReview\@. However, keep in mind that an ICML
-paper should be self contained and should contain sufficient detail
-for the reviewers to evaluate the work. In particular, reviewers are
-not required to look at the Supplementary Material when writing their
-review (they are not required to look at more than the first $8$ pages of the submitted document).
-
-\subsubsection{Camera-Ready Author Information}
-\label{final author}
-
-If a paper is accepted, a final camera-ready copy must be prepared.
-%
-For camera-ready papers, author information should start 0.3~inches below the
-bottom rule surrounding the title. The authors' names should appear in 10~point
-bold type, in a row, separated by white space, and centered. Author names should
-not be broken across lines. Unbolded superscripted numbers, starting 1, should
-be used to refer to affiliations.
-
-Affiliations should be numbered in the order of appearance. A single footnote
-block of text should be used to list all the affiliations. (Academic
-affiliations should list Department, University, City, State/Region, Country.
-Similarly for industrial affiliations.)
-
-Each distinct affiliations should be listed once. If an author has multiple
-affiliations, multiple superscripts should be placed after the name, separated
-by thin spaces. If the authors would like to highlight equal contribution by
-multiple first authors, those authors should have an asterisk placed after their
-name in superscript, and the term ``\textsuperscript{*}Equal contribution"
-should be placed in the footnote block ahead of the list of affiliations. A
-list of corresponding authors and their emails (in the format Full Name
-\textless{}email@domain.com\textgreater{}) can follow the list of affiliations.
-Ideally only one or two names should be listed.
-
-A sample file with author names is included in the ICML2025 style file
-package. Turn on the \texttt{[accepted]} option to the stylefile to
-see the names rendered. All of the guidelines above are implemented
-by the \LaTeX\ style file.
-
-\subsection{Abstract}
-
-The paper abstract should begin in the left column, 0.4~inches below the final
-address. The heading `Abstract' should be centered, bold, and in 11~point type.
-The abstract body should use 10~point type, with a vertical spacing of
-11~points, and should be indented 0.25~inches more than normal on left-hand and
-right-hand margins. Insert 0.4~inches of blank space after the body. Keep your
-abstract brief and self-contained, limiting it to one paragraph and roughly 4--6
-sentences. Gross violations will require correction at the camera-ready phase.
-
-\subsection{Partitioning the Text}
-
-You should organize your paper into sections and paragraphs to help
-readers place a structure on the material and understand its
-contributions.
-
-\subsubsection{Sections and Subsections}
-
-Section headings should be numbered, flush left, and set in 11~pt bold
-type with the content words capitalized. Leave 0.25~inches of space
-before the heading and 0.15~inches after the heading.
-
-Similarly, subsection headings should be numbered, flush left, and set
-in 10~pt bold type with the content words capitalized. Leave
-0.2~inches of space before the heading and 0.13~inches afterward.
-
-Finally, subsubsection headings should be numbered, flush left, and
-set in 10~pt small caps with the content words capitalized. Leave
-0.18~inches of space before the heading and 0.1~inches after the
-heading.
-
-Please use no more than three levels of headings.
-
-\subsubsection{Paragraphs and Footnotes}
-
-Within each section or subsection, you should further partition the
-paper into paragraphs. Do not indent the first line of a given
-paragraph, but insert a blank line between succeeding ones.
-
-You can use footnotes\footnote{Footnotes
-should be complete sentences.} to provide readers with additional
-information about a topic without interrupting the flow of the paper.
-Indicate footnotes with a number in the text where the point is most
-relevant. Place the footnote in 9~point type at the bottom of the
-column in which it appears. Precede the first footnote in a column
-with a horizontal rule of 0.8~inches.\footnote{Multiple footnotes can
-appear in each column, in the same order as they appear in the text,
-but spread them across columns and pages if possible.}
-
-\begin{figure}[ht]
-\vskip 0.2in
-\begin{center}
-\centerline{\includegraphics[width=\columnwidth]{icml_numpapers}}
-\caption{Historical locations and number of accepted papers for International
-Machine Learning Conferences (ICML 1993 -- ICML 2008) and International
-Workshops on Machine Learning (ML 1988 -- ML 1992). At the time this figure was
-produced, the number of accepted papers for ICML 2008 was unknown and instead
-estimated.}
-\label{icml-historical}
-\end{center}
-\vskip -0.2in
-\end{figure}
-
-\subsection{Figures}
-
-You may want to include figures in the paper to illustrate
-your approach and results. Such artwork should be centered,
-legible, and separated from the text. Lines should be dark and at
-least 0.5~points thick for purposes of reproduction, and text should
-not appear on a gray background.
-
-Label all distinct components of each figure. If the figure takes the
-form of a graph, then give a name for each axis and include a legend
-that briefly describes each curve. Do not include a title inside the
-figure; instead, the caption should serve this function.
-
-Number figures sequentially, placing the figure number and caption
-\emph{after} the graphics, with at least 0.1~inches of space before
-the caption and 0.1~inches after it, as in
-\cref{icml-historical}. The figure caption should be set in
-9~point type and centered unless it runs two or more lines, in which
-case it should be flush left. You may float figures to the top or
-bottom of a column, and you may set wide figures across both columns
-(use the environment \texttt{figure*} in \LaTeX). Always place
-two-column figures at the top or bottom of the page.
-
-\subsection{Algorithms}
-
-If you are using \LaTeX, please use the ``algorithm'' and ``algorithmic''
-environments to format pseudocode. These require
-the corresponding stylefiles, algorithm.sty and
-algorithmic.sty, which are supplied with this package.
-\cref{alg:example} shows an example.
-
-\begin{algorithm}[tb]
-   \caption{Bubble Sort}
-   \label{alg:example}
-\begin{algorithmic}
-   \STATE {\bfseries Input:} data $x_i$, size $m$
-   \REPEAT
-   \STATE Initialize $noChange = true$.
-   \FOR{$i=1$ {\bfseries to} $m-1$}
-   \IF{$x_i > x_{i+1}$}
-   \STATE Swap $x_i$ and $x_{i+1}$
-   \STATE $noChange = false$
-   \ENDIF
-   \ENDFOR
-   \UNTIL{$noChange$ is $true$}
-\end{algorithmic}
-\end{algorithm}
-
-\subsection{Tables}
-
-You may also want to include tables that summarize material. Like
-figures, these should be centered, legible, and numbered consecutively.
-However, place the title \emph{above} the table with at least
-0.1~inches of space before the title and the same after it, as in
-\cref{sample-table}. The table title should be set in 9~point
-type and centered unless it runs two or more lines, in which case it
-should be flush left.
-
-% Note use of \abovespace and \belowspace to get reasonable spacing
-% above and below tabular lines.
-
-\begin{table}[t]
-\caption{Classification accuracies for naive Bayes and flexible
-Bayes on various data sets.}
-\label{sample-table}
-\vskip 0.15in
-\begin{center}
-\begin{small}
-\begin{sc}
-\begin{tabular}{lcccr}
-\toprule
-Data set & Naive & Flexible & Better? \\
-\midrule
-Breast    & 95.9$\pm$ 0.2& 96.7$\pm$ 0.2& $\surd$ \\
-Cleveland & 83.3$\pm$ 0.6& 80.0$\pm$ 0.6& $\times$\\
-Glass2    & 61.9$\pm$ 1.4& 83.8$\pm$ 0.7& $\surd$ \\
-Credit    & 74.8$\pm$ 0.5& 78.3$\pm$ 0.6&         \\
-Horse     & 73.3$\pm$ 0.9& 69.7$\pm$ 1.0& $\times$\\
-Meta      & 67.1$\pm$ 0.6& 76.5$\pm$ 0.5& $\surd$ \\
-Pima      & 75.1$\pm$ 0.6& 73.9$\pm$ 0.5&         \\
-Vehicle   & 44.9$\pm$ 0.6& 61.5$\pm$ 0.4& $\surd$ \\
-\bottomrule
-\end{tabular}
-\end{sc}
-\end{small}
-\end{center}
-\vskip -0.1in
-\end{table}
-
-Tables contain textual material, whereas figures contain graphical material.
-Specify the contents of each row and column in the table's topmost
-row. Again, you may float tables to a column's top or bottom, and set
-wide tables across both columns. Place two-column tables at the
-top or bottom of the page.
-
-\subsection{Theorems and such}
-The preferred way is to number definitions, propositions, lemmas, etc. consecutively, within sections, as shown below.
-\begin{definition}
-\label{def:inj}
-A function $f:X \to Y$ is injective if for any $x,y\in X$ different, $f(x)\ne f(y)$.
-\end{definition}
-Using \cref{def:inj} we immediate get the following result:
-\begin{proposition}
-If $f$ is injective mapping a set $X$ to another set $Y$, 
-the cardinality of $Y$ is at least as large as that of $X$
-\end{proposition}
-\begin{proof} 
-Left as an exercise to the reader. 
-\end{proof}
-\cref{lem:usefullemma} stated next will prove to be useful.
-\begin{lemma}
-\label{lem:usefullemma}
-For any $f:X \to Y$ and $g:Y\to Z$ injective functions, $f \circ g$ is injective.
-\end{lemma}
-\begin{theorem}
-\label{thm:bigtheorem}
-If $f:X\to Y$ is bijective, the cardinality of $X$ and $Y$ are the same.
-\end{theorem}
-An easy corollary of \cref{thm:bigtheorem} is the following:
-\begin{corollary}
-If $f:X\to Y$ is bijective, 
-the cardinality of $X$ is at least as large as that of $Y$.
-\end{corollary}
-\begin{assumption}
-The set $X$ is finite.
-\label{ass:xfinite}
-\end{assumption}
-\begin{remark}
-According to some, it is only the finite case (cf. \cref{ass:xfinite}) that is interesting.
-\end{remark}
-%restatable
-
-\subsection{Citations and References}
-
-Please use APA reference format regardless of your formatter
-or word processor. If you rely on the \LaTeX\/ bibliographic
-facility, use \texttt{natbib.sty} and \texttt{icml2025.bst}
-included in the style-file package to obtain this format.
-
-Citations within the text should include the authors' last names and
-year. If the authors' names are included in the sentence, place only
-the year in parentheses, for example when referencing Arthur Samuel's
-pioneering work. Otherwise place the entire
-reference in parentheses with the authors and year separated by a
-comma. List multiple references separated by
-semicolons. Use the `et~al.'
-construct only for citations with three or more authors or after
-listing all authors to a publication in an earlier reference.
-
-Authors should cite their own work in the third person
-in the initial version of their paper submitted for blind review.
-Please refer to \cref{author info} for detailed instructions on how to
-cite your own papers.
-
-Use an unnumbered first-level section heading for the references, and use a
-hanging indent style, with the first line of the reference flush against the
-left margin and subsequent lines indented by 10 points. The references at the
-end of this document give examples for journal articles,
-conference publications, book chapters, books, edited volumes, technical reports, and dissertations.
-
-Alphabetize references by the surnames of the first authors, with
-single author entries preceding multiple author entries. Order
-references for the same authors by year of publication, with the
-earliest first. Make sure that each reference includes all relevant
-information (e.g., page numbers).
-
-Please put some effort into making references complete, presentable, and
-consistent, e.g. use the actual current name of authors.
-If using bibtex, please protect capital letters of names and
-abbreviations in titles, for example, use \{B\}ayesian or \{L\}ipschitz
-in your .bib file.
-
-\section*{Impact Statement}
-
-Authors are \textbf{required} to include a statement of the potential 
-broader impact of their work, including its ethical aspects and future 
-societal consequences. This statement should be in an unnumbered 
-section at the end of the paper (co-located with Acknowledgements -- 
-the two may appear in either order, but both must be before References), 
-and does not count toward the paper page limit. In many cases, where 
-the ethical impacts and expected societal implications are those that 
-are well established when advancing the field of Machine Learning, 
-substantial discussion is not required, and a simple statement such 
-as the following will suffice:
-
-``This paper presents work whose goal is to advance the field of 
-Machine Learning. There are many potential societal consequences 
-of our work, none which we feel must be specifically highlighted here.''
-
-The above statement can be used verbatim in such cases, but we 
-encourage authors to think about whether there is content which does 
-warrant further discussion, as this statement will be apparent if the 
-paper is later flagged for ethics review.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Report Start %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -608,41 +155,63 @@ Deep operator network (DeepONet)\cite{Deeponet} is a neural network architecture
 FIM\cite{fim-l} is a model originally designed for the interpolation of time series displaying temporal missing patterns. Meaning we have our $k$ embeddings from $1, 2, ..., q-1, q+1, ..., k$ with the embedding $q$ missing. The task of FIM was then to predict the embedding for window $q$ from the other embeddings. In our work we used the core ideas of FIM but for forecasting the future embedding $k+1$. For this FIM takes in the embeddings $h_1, .., h_k$ along with local scale embeddings $s_1, .., s_k$. These scale embeddings are created by saving the normalization values, used to normalize the time-series data for each respective window, and feeding them through a MLP to obtain an embedding. Both embeddings then get concatenated and fed through a transformer and summary network to obtain the embedding $h_{k+1}$. With this embedding we can use the trunk net from DeepONet to obtain a function for future time points $t$.
 
 \section{Synthetic Dataset}
-For training and testing our models, we created two synthetic datasets (one for each model) containing different time-series.
-For the DeepONet model, we created a dataset containing 100K random one-dimensional, target interpolation functions $f(\tau)$ on the interval $[0, 1]$, defined on a fine grid of 128 points.
-We sampled them from Gaussian Processes with an RBF kernel and mean $0$. The kernel is defined as:
-\begin{equation*}
-    k(\tau, \tau') = \sigma^2 \cdot \exp\left(-\frac{||\tau - \tau'||^2}{2 \cdot l^2}\right)
-\end{equation*}
-It has two hyperparameters, the scale $l$, which controls the scale at which variations take place and the variance $\sigma^2$.
-The scale is drawn randomly from a beta distribution and scaled by $0.1$ to increase the variety of the vector fields in our dataset.
-Depending on whether or not we are creating a train or test dataset, the alpha and beta values for the beta distributions are randomly chosen from either $[1.0,2.0,5.0]$ or $[0.5,3.25,7.8]$ respectively. The variance for the kernel is drawn uniformly from the interval $[0.5, 2]$.
-we then sample random observations grid points $\tau$ on our functions, which become the input for our model. We sample a random subset between “min=50” and “max=90” points from the 128 grid points and pad the rest with $0$'s. We also create a binary mask for each observation grid, which tracks which indices are observed versus unobserved, that gets fed into our model along with the points.
-Half of our observation points are sampled regular and the other half irregular (in time). Since data is noisy in real-world applications we add Gaussian noise to the observations with a standard deviation drawn from $\mathcal{N}(0, 0.1)$ and mean $0$ after first normalizing our data.
-We normalize the observations to $[0, 1]$ and then perform z-scoring to normalize the function values, which then gets us our normalized values like this:
-\begin{align*}
-    \hat{f}(\tau) &= \frac{f(\tau) - \mu}{\sigma}\\
-    \hat{\tau} &= \frac{\tau - \tau^{min}}{\tau^{max} - \tau^{min}}
-\end{align*}
-With $\mu$ and $\sigma$ being the mean and standard deviation of the function values and $\tau^{min}$ and $\tau^{max}$ being the minimum and maximum of the observation points.\\
-For the FIM model we created a dataset containing 100K random one-dimensional, target functions $f(\tau)$ on the interval $[0, 1]$, defined on a fine grid of 640 points.
-We sampled them from Gaussian Processes with mean $0$ and different kernels, namely a periodic kernel $k_{p}$ (30\%), a locally periodic kernel $k_{lp}$ (30\%), a linear plus periodic kernel $k_{lpp}$ (20\%)  and a linear times periodic kernel $k_{ltp}$ (20\%).
+\label{sec:dataset_arwin}
+To train and test our models, we generated two synthetic datasets, each tailored to its respective model, consisting of time series.
+
+For the DeepONet model, we constructed a dataset comprising \( 100{,}000 \) random one-dimensional target interpolation functions \( f(\tau) \), where \( \tau \in [0, 1] \). Each function is defined on a uniform grid of 128 points and sampled from a Gaussian Process (GP) with a mean function of \( 0 \) and a Radial Basis Function (RBF) kernel given by
+\[
+k(\tau, \tau') = \sigma^2 \exp\left(-\frac{\|\tau - \tau'\|^2}{2l^2}\right),
+\]
+where \( \sigma^2 \) is the variance of the Gaussian Process, determining the magnitude of variations in \( f(\tau) \), and \( l \) is the length scale, controlling the smoothness of the sampled functions.
+
+The length scale is drawn randomly from a beta distribution and scaled by $0.1$ to increase the frequency of the sampled functions $f$ in our dataset.\\
+Depending on whether we are creating a training or validation dataset, the values of \(\alpha\) and \(\beta\) for the beta distributions are uniform selected from either \([1.0, 2.0, 5.0]\) or \([0.5, 3.25, 7.8]\), respectively. The variance \(\sigma^2\) for the kernel is drawn uniformly from the interval \([0.5, 2]\).
+We then sample random observation grid points \(\tau\) from our functions, which serve as inputs for our model. A random subset of points, between \(\text{min}=50\) and \(\text{max}=90\), is selected from the 128 grid points, and the remaining points are padded with \(0\)'s. Additionally, we create a binary mask for each observation grid to indicate which indices are observed versus unobserved. This mask is provided to the model along with the observed points.
+
+Half of the observation points \(\tau\) are sampled regularly, while the other half are sampled irregularly in time. To account for noise in real-world applications, Gaussian noise \(\epsilon \sim \mathcal{N}(0, 0.1)\) with mean \(0\) is added to the observations after normalizing the data.
+
+The normalization process involves applying z-scoring to the function values \(f(\tau)\) and min-max scaling to the time points \(\tau\). The normalized values are computed as follows:
+
+\[
+\hat{f}(\tau) = \frac{f(\tau) - \mu}{\sigma}, \quad \hat{\tau} = \frac{\tau - \tau^{\text{min}}}{\tau^{\text{max}} - \tau^{\text{min}}},
+\]
+
+where \(\mu\) and \(\sigma\) denote the mean and standard deviation of the function values \(f(\tau)\), and \(\tau^{\text{min}}\) and \(\tau^{\text{max}}\) represent the minimum and maximum values of the observation points \(\tau\). This approach ensures that the function values \(\hat{f}(\tau)\) are standardized, while the time points \(\hat{\tau}\) are scaled to the interval \([0, 1]\).
+\\
+For the FIM model, we created a dataset comprising \(100{,}000\) random one-dimensional target functions \(f(\tau)\) defined on the interval \([0, 1]\) and evaluated on a fine grid of 640 points. These functions were sampled from Gaussian Processes with a mean function of \(0\) and different kernels. The dataset distribution is composed as follows: periodic kernel \(k_p\) (30\%), locally periodic kernel \(k_{lp}\) (30\%), linear plus periodic kernel \(k_{lpp}\) (20\%), and linear times periodic kernel \(k_{ltp}\) (20\%).
+
 The kernels are defined as:
 \begin{align*}
-    k_{p}(\tau, \tau') &= \sigma^2 \cdot \exp\left(-\frac{2\sin^2(\pi|\tau - \tau'|/p)}{l^2}\right) \\
-    k_{lp}(\tau, \tau') &= k_{p}(\tau, \tau') \cdot \exp\left(-\frac{(\tau - \tau')^2}{2l^2}\right) \\
-    k_{lpp}(\tau, \tau') &= k_{p}(\tau, \tau') + \sigma^2 \cdot (\tau \cdot \tau'^T) \\
-    k_{ltp}(\tau, \tau') &= k_{p}(\tau, \tau') \cdot \sigma^2 \cdot (\tau \cdot \tau'^T)
+    k_p(\tau, \tau') &= \sigma^2 \cdot \exp\left(-\frac{2\sin^2\left(\pi |\tau - \tau'| / p\right)}{l^2}\right), \\
+    k_{lp}(\tau, \tau') &= k_p(\tau, \tau') \cdot \exp\left(-\frac{(\tau - \tau')^2}{2l^2}\right), \\
+    k_{lpp}(\tau, \tau') &= k_p(\tau, \tau') + \sigma^2 \cdot (\tau \cdot \tau'^T), \\
+    k_{ltp}(\tau, \tau') &= k_p(\tau, \tau') \cdot \sigma^2 \cdot (\tau \cdot \tau'^T).
 \end{align*}
-On top of the length $l$ and variance $\sigma^2$ the kernels now also have a periodicity parameter $p$. Both the length and periodicity are drawn from a beta distribution again. This time the values for the distribution are drawn from either $[1.0,2.0,5.0]$ or $[1,1,1]$.
-The variance is drawn the same way as for the DeepONet dataset. We again sample random observations grid points $\tau$ on our functions, which become the input for our model. However since we want to predict the future embedding $k+1$ we split the observations into $5$ windows with $k=4$. Thus we only sample observations from the first $540$ points.
-The first $4$ windows are then created the same way as for the DeepONet dataset, only that the standard deviation of the noise is now drawn from $\mathcal{N}(0, 0.025)$.
-On thing to note is that before we perform the normalizations of each $128$-point window we first normalize the whole function. Inspired by \cite{fim-l} we save the local statistics of each window into a scales array $s_l$, with:
-$s_l = [f(\tau)^{min}, f(\tau)^{max}, f(\tau)^{first}, f(\tau)^{last}, f(\tau)^{first} - f(\tau)^{last}, \tau^{first}, \tau^{last}, \tau^{first} - \tau^{last}]$. With $\tau$ being our sampled observations and $f$ being our noisy function values.
+
+In addition to the length scale \(l\) and variance \(\sigma^2\), the kernels include a periodicity parameter \(p\). The length scale and periodicity are sampled from beta distributions. The parameters for these beta distributions are drawn either from \([1.0, 2.0, 5.0]\) for the training dataset or \([1, 1, 1]\) for the validation dataset.
+
+The variance is drawn in the same manner as for the DeepONet dataset. We again sample random observation grid points \(\tau\) from our functions, which serve as inputs for our model. We divide the observations into \(K=5\) windows, where the first 4 windows serve as the context, and the \(K\)-th window is used as the prediction ground truth.
+
+The first \(4\) windows are constructed in the same manner as for the DeepONet dataset, except that the standard deviation of the added noise is now drawn from \(\mathcal{N}(0, 0.025)\). One important detail is that, before normalizing each \(128\)-point window in the same way as for the DeepONet dataset, we first normalize the entire function by applying z-scoring to the function values and min-max scaling to \(\tau\).
+
+Inspired by \cite{fim-l}, we save the local statistics of each window $l\leq K$ into a scales array \(s_l\), defined as:
+\[
+\begin{aligned}
+s_l = [&\mu, \sigma, \max_{\tau} f(\tau) - \min_{\tau} f(\tau), \\
+       &f(\tau^{\text{first}}), f(\tau^{\text{last}}), 
+        f(\tau^{\text{last}}) - f(\tau^{\text{first}}), \\
+       &\tau^{\text{first}}, \tau^{\text{last}}, 
+        \tau^{\text{last}} - \tau^{\text{first}}].
+\end{aligned}
+\]
+
+
+where \(\tau\) represents the sampled observations, and \(f\) denotes the noisy function values.
+
 
 
 \section{Model architecture}
-Next, we proceed with a detailed description of the architectures for both the FIM-l and FIM models. The FIM-l model serves as an operator, aiming to learn the underlying function from noisy samples, while the FIM model is designed as a forecasting framework. Our description closely follows the original implementations of both architectures, as outlined in \cite{fim-l}.
+Next, we proceed with a detailed description of the architectures for both the FIM-l and FIM models. The FIM-l model serves as an operator, aiming to learn the underlying function from noisy samples, while the FIM model is designed as a forecasting framework. Our description closely follows the original implementations of both architectures, as outlined in the FIM paper \cite{fim-l}.
 
 \subsection{FIM-$\ell$}\label{sec:FIM-l}
 The primary aim of the FIM-$\ell$ model is to learn the underlying function $f(\tau)$ that has been augmented by noise to generate the observed time series $(y_i, \tau_i)$. The model should allow querying interpolated values of the underlying function $f(\tau)$ at arbitrary time points, including those not present in the observed data.
@@ -656,7 +225,7 @@ We then proceed by concatenating both components to obtain the individual observ
 \[
     \mathbf{y^{\theta}_i} = \text{Concat}(\hat{y_i}, \hat{t_i}).
 \]
-Following the work of DeepONet, we define a \emph{branch net}-equivalent network consisting of a transformer-encoder network \cite{??}, denoted as $\psi^{\theta}_0$, and a multilayer perceptron (MLP), denoted as $\phi^{\theta}_3$. Together, these form
+Following the work of DeepONet, we define a \emph{branch net}-equivalent network consisting of a transformer-encoder network \cite{vaswani2023attentionneed}, denoted as $\psi^{\theta}_0$, and a multilayer perceptron (MLP), denoted as $\phi^{\theta}_3$. Together, these form
 \[
     \mathbf{u^{\theta}} = \phi^{\theta}_3\big(\psi^{\theta}_0(\mathbf{y^{\theta}_1}, \dots, \mathbf{y^{\theta}_l})\big).
 \]
@@ -684,7 +253,7 @@ We then split these values into \(K=5\) windows, such that for window \(S_j\), w
 S_{ji} = (y_{\alpha + i}, \tau_{\alpha + i}), \quad \alpha = \sum_{l=1}^{j-1}w_l,
 \]
 where \(w_l\) is the number of observations in window \(l \leq K-1\).
-Additionally, for each of these windows, we construct their local scale characteristics \(s_l \in \mathbb{R}^9\) (??), which are fed into an embedding layer \(\sigma^{\omega}_0\), defined as
+Additionally, for each of these windows, we construct their local scale characteristics \(s_l \in \mathbb{R}^9\) \ref{sec:dataset_arwin}, which are fed into an embedding layer \(\sigma^{\omega}_0\), defined as
 \[
 \hat{s_l} = \sigma^{\omega}_0(s_l).
 \]
@@ -770,11 +339,7 @@ We again provide the model with the noisy observation sequence, observation time
     \textbf{Learnable Query}         & Parameter tensor of shape (1, $2d_\text{model}$)\\ \midrule
     \textbf{Summary Attention  $\lambda^{\omega}_1$}       & Multihead Attention ($2d_\text{model}$, $n_\text{heads}$) \\ \midrule
     
-    \textbf{Extractor Network $\eta^{\omega}_0$} & Sequential: \\ 
-    & \quad Linear($2d_\text{model}$, $4d_\text{model}$) \\ 
-    & \quad LeakyReLU, LayerNorm \\ 
-    & \quad Linear($4d_\text{model}$, $2d_\text{model}$) \\ 
-    & \quad LeakyReLU, Linear($2d_\text{model}$, $d_\text{model}$) \\ \midrule
+    \textbf{Extractor Network $\eta^{\omega}_0$} & 4x Linear ($2d_\text{model} \to d_\text{model}$), LeakyReLU, LayerNorm \\ \midrule
     
     \textbf{Trunk Embedding $\phi^{\theta}_4$}         & Reused from FIM-$\ell$ (Frozen)\\ \midrule
     \textbf{Trunk MLP $\phi^{\theta}_5$}           & Reused from FIM-$\ell$ (Frozen) \\ \midrule
@@ -789,7 +354,7 @@ We again provide the model with the noisy observation sequence, observation time
     
 
 \section{Experiments}
-In this section, we discuss additional experiments conducted on the model's architecture and the construction of the loss function to achieve higher prediction accuracy. The impact of each of these approaches will be presented later in Section~\ref{}.
+In this section, we discuss additional experiments conducted on the model's architecture and the construction of the loss function to achieve higher prediction accuracy. The impact of each of these approaches will be presented later in Section~\ref{sec:results}.
 
 \subsection{Learned Positional Encoding for FIM-$\ell$ Embeddings}
 In this approach, we hypothesize that the model may benefit from additional positional encoding for the attention-based summary network \(\lambda^{\omega}_1\). We define
@@ -836,8 +401,9 @@ where $y$ denotes the ground truth values of the target variable, and $\hat{y}$ 
 
 
 
-
 \section{Results}
+\label{sec:results}
+
 We will now discuss our findings regarding both the baseline architecture and the performance of our additional experiments. For evaluation, we utilize both our validation set and the \emph{ETTh1} dataset, which comprises real-world time series data from multiple domains.
 \subsection{Findings on Validation Set}
 On our validation set, we evaluate the performance of our models with the 
@@ -878,12 +444,12 @@ The same procedure is applied for the time horizon of 192.
 
 \end{tabular}
     \caption{MAE results for three model variants and TimesFM on two datasets.\\
-    \textit{*} TimesFM \cite{} only reports the average score over both time horizons. Additionally, they use only 4 datasets from ETTh1, which they do not disclose.
+    \textit{*} TimesFM \cite{das2024decoderonlyfoundationmodeltimeseries} only reports the average score over both time horizons. Additionally, they use only 4 datasets from ETTh1, which they do not disclose.
     }
     \label{tab:evaluation_results}
 \end{table}
 We evaluate our different model variants on the entire ETTh1 dataset in a zero-shot manner, meaning that we evaluate on all sub-datasets contained within ETTh1 and calculate the average performance.
-Additionally, we compare our model to the one proposed by TimesFM \cite{}, using their accuracy score as a benchmark.
+Additionally, we compare our model to the one proposed by TimesFM \cite{das2024decoderonlyfoundationmodeltimeseries}, using their accuracy score as a benchmark.
 As shown in Table~\ref{tab:evaluation_results}, positional encoding does not appear to offer a significant benefit over the standard model. However, the PE + CSL approach provides slightly better performance. We also observe that the zero-shot performance of TimesFM on ETTh1-96 is much better than that of our current model. It is important to note, however, that TimesFM has been trained on a variety of data, both real-world and synthetic, and is approximately an order of magnitude larger in terms of parameter count.
 We observe the same ordering of models for a horizon window of 192, where the PE + CSL version performs slightly better than the vanilla and PE versions.
 
@@ -906,10 +472,18 @@ Finally, we present two examples from the ETTh1 dataset using our model to showc
 This suggests that our networks would likely benefit significantly from training on more diverse and real-world datasets, allowing them to learn patterns that are more subtle than those generated by a Gaussian process with a periodic kernel.
 
 \section{Conclusion}
+In this work, we presented a novel approach for zero-shot forecasting by integrating the concepts of DeepONet and the FIM architecture to predict future horizons in time series data. To facilitate effective training, we constructed a synthetic dataset comprising randomly sampled periodic functions augmented with normally distributed noise.
 
-% In the unusual situation where you want a paper to appear in the
-% references without citing it in the main text, use \nocite
-\nocite{langley00}
+To advance our architecture further, we experimented with several modifications, including the addition of positional encoding for local function embeddings and the introduction of an auxiliary loss function aimed at aligning the predicted embeddings of future horizons with their corresponding ground truth embeddings. 
+
+We evaluated our approaches on both a validation set and the \emph{ETTh1} dataset. While the incorporation of positional encoding did not yield a significant performance improvement, the cosine similarity loss variant demonstrated a modest enhancement in predictive accuracy.
+
+Our findings highlight the importance of carefully constructing datasets that exhibit genuine patterns to prevent the model from overfitting to noise. Additionally, integrating real-world datasets into the training process, as done by TimesFM, is essential for enhancing the model's applicability and performance in practical scenarios. 
+
+
+
+
+
 
 \bibliography{example_paper}
 \bibliographystyle{icml2025}
@@ -923,19 +497,38 @@ This suggests that our networks would likely benefit significantly from training
 \newpage
 \appendix
 \onecolumn
-\section{You \emph{can} have an appendix here.}
-
-You can have as much text here as you want. The main body must be at most $8$ pages long.
-For the final version, one more page can be added.
-If you want, you can use an appendix like this one.  
-
-The $\mathtt{\backslash onecolumn}$ command above can be kept in place if you prefer a one-column appendix, or can be removed if you prefer a two-column appendix.  Apart from this possible change, the style (font size, spacing, margins, page numbering, etc.) should be kept the same as the main body.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
+\section{Appendix}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{assets/test1.png}
+    \caption{Example on the live dataset with $\text{horizon}=128$, using the PE + CSL model version.
+    }\label{fig:test1}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{assets/test2.png}
+    \caption{Example on the live dataset with $\text{horizon}=128$, using the PE + CSL model version.
+    }\label{fig:test2}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{assets/test3.png}
+    \caption{Example on the live dataset with $\text{horizon}=128$, using the PE + CSL model version.
+    }\label{fig:test3}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{assets/test4.png}
+    \caption{Example on the live dataset with $\text{horizon}=128$, using the PE + CSL model version.
+    }\label{fig:test4}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{assets/test5.png}
+    \caption{Example on the live dataset with $\text{horizon}=128$, using the PE + CSL model version.
+    }\label{fig:test5}
+\end{figure}
 \end{document}
-
 
 % This document was modified from the file originally made available by
 % Pat Langley and Andrea Danyluk for ICML-2K. This version was created
