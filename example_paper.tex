@@ -129,6 +129,25 @@ In our case, the neural operator proves useful for addressing key challenges in 
 In summary, this work focuses on data interpolation using a neural operator, assuming that time series data points originate from an underlying continuous time function. The goal is to train a model capable of deriving continuous time functions in a zero-shot manner, learning local representations of functions for forecasting, and inferring the hidden continuous time function to enable both retrospective understanding and future predictions.
 
 The contributions of this work are as follows: (1) We create a synthetic dataset with 100K one-dimensional target functions. These functions are sampled from Gaussian processes with periodic, locally periodic, linear plus periodic, and linear times periodic kernels. We add Gaussian noise, sample random observation grids, and split the series into normalized windows to prepare the data for the following models. (2) We build a first inference model (IM1) that uses a transformer to process time series tuples $(y_1, t_1), \dots, (y_L, t_L)$. We introduce a summary network with attention to combine embeddings from the branch network and integrate these with the outputs of the trunk network using a Multilayer Perceptron (MLP). The model is trained on the synthetic dataset. (3) Finally, we develop a second inference model (IM2) that uses embeddings from IM1 to encode local fluctuations. These embeddings are combined with normalization statistics and processed through another transformer and summary network. The model reconstructs the last unseen window in the time series, while keeping IM1 parameters fixed.
+
+
+
+\section{Introduction}
+
+Time series modeling plays a vital role in fields such as climate science \cite{climate}, medicine \cite{medicine}, finance \cite{finance}, and retail \cite{retail}. The objective is to capture temporal patterns for predictions of future time horizons. However, real-world time series data are often sparse and noisy, requiring interpolation to create a smooth, continuous representation. This assumes the data stem from an underlying hidden function, which we can approximate for tasks like forecasting.
+
+In this report, we propose a machine learning approach using neural operators for time series forecasting in a zero-shot learning setting.
+Zero-shot learning enables models to generalize to new datasets, even beyond their training distribution, making it a promising method for building foundational models. 
+As real-world data is often scarce, we generate multiple synthetic datasets by creating functions that capture trends and periodicity, combined with Gaussian noise to model observations of real-world phenomena.
+
+The core idea of our method is to train a neural operator capable of mapping sparse time series observations into a smooth, continuous function space. This enables querying the predicted continuous function at arbitrary time points. The original concept is inspired by the FIM paper \cite{fim-l}, which leverages such neural operators for zero-shot imputation of observation gaps. Our approach extends this method by shifting the focus from imputing missing values to reconstructing a future time horizon based on observed past values.
+
+The contributions of this work are as follows: (1) We create a synthetic dataset with 100K one-dimensional target functions sampled from a Gaussian Processes using multiple variants of kernels.
+
+(2) Following the work of \cite{fim-l}, we utilize two models: FIM-$\ell$ and FIM. The first model, FIM-$\ell$, is responsible for learning local embeddings for localized windows of a given set of observations. These embeddings are then utilized by the second model, FIM, to predict the underlying function at future time horizons.
+
+ (3) Finally, we aim to refine these architectures by experimenting with different variations of the architecture and training objectives. These modifications are then evaluated on both our synthetic validation datasets and a real-world dataset.
+
 \section{Related Work}
 Statistical methods such as ARIMA have been foundational in time series forecasting. ARIMA, which stands for autoregressive (AR), integrated (I), and moving average (MA), combines these three components to model stationary time series data. The autoregressive component (AR) forecasts future values as a linear combination of previously observed values. The integrated component (I) refers to the number of differencing operations (order $d$) required to make the time series stationary. Stationarity, a key assumption, is achieved through transformations such as differencing or logarithms to stabilize the mean and variance. The moving average component (MA) uses past forecast errors rather than observed values for predictions. Combining these components, the full ARIMA model can be expressed as:
 \begin{equation} 
